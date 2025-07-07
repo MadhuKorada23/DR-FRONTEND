@@ -1,44 +1,24 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
 # dependencies
 /node_modules
+/.pnp
+.pnp.js
 
-# build
-/build
-/dist
-
-# production logs
-*.log
-
-# runtime data
-*.pid
-*.seed
-*.pid.lock
-
-# sensitive environment variables
-.env
-.env.*.local
-
-# IDEs and editors
-.vscode/
-.idea/
-*.sublime-workspace
-*.sublime-project
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# optional npm cache
-.npm
-
-# test coverage
+# testing
 /coverage
 
-# local React dev tools data
-.react-devtools
+# production
+/build
 
-# parcel-bundler cache
-.cache
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env
 
-# lock files
-package-lock.json
-yarn.lock
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

@@ -15,6 +15,8 @@ import ProtectedDash from "./pages/dashboard/ProtectedDash";
 import RoomsOverview from "./pages/RoomsOverview.jsx";
 import Footer from "./pages/dashboard/Footer.jsx";
 import Team from "./pages/dashboard/Team.jsx";
+import TimetableMonday from "./pages/FloorTimetableOverview.jsx";
+import FindFaculty from "./pages/FindFaculty.jsx";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!sessionStorage.getItem("token"));
@@ -75,6 +77,10 @@ const App = () => {
               <Route path="/register" element={<RegisterProtect><Register /></RegisterProtect>} />
               <Route path="/dashboard" element={<ProtectedDash role="super_admin"><AdminDashboard /></ProtectedDash>} />
               <Route path="/roomsOverview" element={<ProtectedRoute><RoomsOverview /></ProtectedRoute>} />
+              <Route path="/:blockname/showtimetable" element={<ProtectedRoute><TimetableMonday /></ProtectedRoute>} />
+              
+              <Route path="/findFaculty" element={<ProtectedRoute><FindFaculty /></ProtectedRoute>} />
+
             </>
           ) : (
             <Route path="*" element={<Navigate to="/login" />} />

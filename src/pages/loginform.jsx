@@ -39,17 +39,11 @@ const Login = ({ setIsAuthenticated }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const trimmedUserId = userId.trim();
-      const trimmedPassword = password.trim();
-
-      const payload = isAdmin 
-        ? { userId: trimmedUserId, password: trimmedPassword } 
-        : { userId: trimmedUserId };
-
+      const payload = isAdmin ? { userId, password } : { userId };
       const res = await axios.post("https://dr-backend-32ec.onrender.com/auth/login", payload);
 
       if (isAdmin && res) {
-        await axios.get(`https://dr-backend-32ec.onrender.com/auth/userDetails/${trimmedUserId}`);
+        await axios.get(`https://dr-backend-32ec.onrender.com/auth/userDetails/${userId}`);
       }
 
       sessionStorage.setItem("token", JSON.stringify(res.data.token));
@@ -67,81 +61,98 @@ const Login = ({ setIsAuthenticated }) => {
   };
 
   return (
-    <div className="login-page-wrapper">
-      <div className="d-flex justify-content-center align-items-center vh-100">
-        <div
-          className="bg-white p-4 rounded shadow-lg text-center"
-          data-aos="flip-up"
-          data-aos-duration="1000"
-          data-aos-delay="500"
-          style={{ maxWidth: "400px", width: "100%" }}
-        >
-          <h2 className="mb-3 text-dark">{isAdmin ? "Admin Login" : "Student Login"}</h2>
+    
+   <>
+  {/* Marquee Banner at Top */}
+  <div className="top-marquee text-white text-center py-2">
+    <marquee behavior="scroll" direction="left" scrollamount="6">
+      🚀 Welcome to AITAM Digital Room Management Portal — Smart, Fast, and Reliable!
+    </marquee>
+  </div>
 
-          {error && <p className="text-danger small">{error}</p>}
-
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="User ID"
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
-                required
-                disabled={loading}
-              />
-            </div>
-
-            {isAdmin && (
-              <div className="mb-3 position-relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  className="form-control"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={loading}
-                />
-                <i
-                  className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"} position-absolute`}
-                  onClick={() => setShowPassword(!showPassword)}
-                  style={{
-                    top: "50%",
-                    right: "10px",
-                    transform: "translateY(-50%)",
-                    cursor: "pointer",
-                    fontSize: "1.2rem",
-                    color: "#6c757d",
-                    pointerEvents: loading ? "none" : "auto",
-                  }}
-                />
-              </div>
-            )}
-
-            <button type="submit" className="btn btn-primary w-100" disabled={loading}>
-              {loading ? (
-                <>
-                  <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                  &nbsp;Logging in...
-                </>
-              ) : (
-                "Login"
-              )}
-            </button>
-          </form>
-
-          <p
-            className="mt-3 text-primary"
-            style={{ cursor: loading ? "not-allowed" : "pointer" }}
-            onClick={() => !loading && setIsAdmin(!isAdmin)}
-          >
-            {isAdmin ? "Login as Student" : "Login as Admin"}
-          </p>
-        </div>
+  {/* Login Page Wrapper */}
+  <div className="login-page-wrapper">
+    <div 
+      className="bg-white p-4 rounded shadow-lg text-center"
+      data-aos="flip-up"
+      data-aos-duration="1000"
+      data-aos-delay="500"
+      style={{ maxWidth: "400px", width: "100%" }}
+    >
+      {/* Logo */}
+      <div className="mb-3">
+        <img
+          src="/logo2.webp"
+          alt="AITAM Logo"
+          className="img-fluid"
+        />
       </div>
+
+      <h2 className="mb-3 text-dark">{isAdmin ? "Admin Login" : "Student Login"}</h2>
+      {error && <p className="text-danger small">{error}</p>}
+
+      {/* Login Form */}
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3 input-group">
+          <span className="input-group-text"><i className="bi bi-person"></i></span>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="User ID"
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+            required
+            disabled={loading}
+          />
+        </div>
+
+        {isAdmin && (
+          <div className="mb-3 input-group position-relative">
+            <span className="input-group-text"><i className="bi bi-lock"></i></span>
+            <input
+              type={showPassword ? "text" : "password"}
+              className="form-control"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={loading}
+            />
+            <span
+              className="input-group-text"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{ cursor: loading ? "not-allowed" : "pointer" }}
+            >
+              <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+            </span>
+          </div>
+        )}
+
+        <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+          {loading ? (
+            <>
+              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              &nbsp;Logging in...
+            </>
+          ) : (
+            "Login"
+          )}
+        </button>
+      </form>
+
+      {/* Toggle Admin/Student */}
+      <p
+        className="mt-3 text-primary"
+        style={{ cursor: loading ? "not-allowed" : "pointer" }}
+        onClick={() => !loading && setIsAdmin(!isAdmin)}
+      >
+        {isAdmin ? "Login as Student" : "Login as Admin"}
+      </p>
     </div>
+  </div>
+</>
+
+
   );
 };
 
