@@ -88,17 +88,21 @@ const TimetableMonday = () => {
                       <tr key={cls._id}>
                         <th scope="row" className="fw-semibold text-primary">{cls.className}</th>
                         {periods.map((p, i) => (
-                          <td key={i}>
-                            {p ? (
-                              <>
-                                <span className="fw-bold d-block text-dark">{p.subject}</span>
-                                <span className="badge bg-light text-secondary">{p.startTime} - {p.endTime}</span><br />
-                                <small className="text-muted">{p.faculty}</small>
-                              </>
-                            ) : (
-                              <span className="text-muted">-</span>
-                            )}
-                          </td>
+                         <td key={i}>
+                           
+                            <>
+                              <span className="fw-bold d-block text-dark">{p.subject}</span>
+                              <span className="badge bg-light text-secondary">
+                                {p.startTime} - {p.endTime}
+                              </span>
+                              <br />
+                              <small className="text-muted">
+                                {p.faculty ? p.faculty : '-'}
+                              </small>
+                            </>
+                          
+                        </td>
+
                         ))}
                       </tr>
                     );
