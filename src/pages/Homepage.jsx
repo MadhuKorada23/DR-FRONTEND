@@ -174,26 +174,30 @@ const Homepage = ({footerHeight}) => {
   };
 
   return (
-    <>
+   <>
   {/* Header/Navbar - Fixed */}
-  <div style={{
-    background: 'linear-gradient(90deg,#0066cc,#003366)',
-    padding: '12px 0',
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    zIndex: 1000,
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
-  }}>
+  <div
+    style={{
+      background: 'linear-gradient(90deg,#0066cc,#003366)',
+      padding: '12px 0',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      zIndex: 1000,
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
+    }}
+  >
     <div className="container-fluid d-flex align-items-center justify-content-between flex-wrap">
-      <div style={{
-        display: 'flex',
-        width: '100%',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap'
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          width: '100%',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap'
+        }}
+      >
         {/* Logo */}
         <div style={{ flex: '0 1 auto' }}>
           <img
@@ -210,7 +214,8 @@ const Homepage = ({footerHeight}) => {
         </div>
 
         {/* Title */}
-        <h3 className="m-0 text-center text-white flex-grow-1"
+        <h3
+          className="m-0 text-center text-white flex-grow-1"
           style={{
             fontSize: 'clamp(1.4rem, 2vw, 2rem)',
             fontWeight: '600',
@@ -222,7 +227,8 @@ const Homepage = ({footerHeight}) => {
         </h3>
 
         {/* Search Bar */}
-        <div className="d-flex align-items-center my-2 my-md-0"
+        <div
+          className="d-flex align-items-center my-2 my-md-0"
           style={{
             flex: '0 1 auto',
             marginRight: '1cm',
@@ -246,7 +252,8 @@ const Homepage = ({footerHeight}) => {
 
         {/* Hamburger Menu */}
         <div className="position-relative" ref={menuRef}>
-          <button className="btn btn-outline-light"
+          <button
+            className="btn btn-outline-light"
             onClick={() => setShowMenu(!showMenu)}
             style={{
               borderRadius: '6px',
@@ -257,7 +264,8 @@ const Homepage = ({footerHeight}) => {
             ☰
           </button>
           {showMenu && (
-            <ul className="dropdown-menu show position-absolute end-0 mt-2"
+            <ul
+              className="dropdown-menu show position-absolute end-0 mt-2"
               style={{
                 minWidth: '180px',
                 borderRadius: '10px',
@@ -265,17 +273,41 @@ const Homepage = ({footerHeight}) => {
               }}
             >
               {access === 'super_admin' && (
-                <li><button className="dropdown-item text-primary" onClick={() => navigate('/aitam')}>Add Block</button></li>
+                <li>
+                  <button className="dropdown-item text-primary" onClick={() => navigate('/aitam')}>
+                    Add Block
+                  </button>
+                </li>
               )}
               {access !== 'student' && (
-                <li><button className="dropdown-item text-success" onClick={handleRegisterUser}>Register</button></li>
+                <li>
+                  <button className="dropdown-item text-success" onClick={handleRegisterUser}>
+                    Register
+                  </button>
+                </li>
               )}
               {access === 'super_admin' && (
-                <li><button className="dropdown-item text-primary" onClick={dashboardHandler}>Dashboard</button></li>
+                <li>
+                  <button className="dropdown-item text-primary" onClick={dashboardHandler}>
+                    Dashboard
+                  </button>
+                </li>
               )}
-              <li><button className="dropdown-item text-warning" onClick={roomsOverview}>Rooms Overview</button></li>
-              <li><button className="dropdown-item text-success" onClick={() => { navigate('/findFaculty') }}>Find Faculty</button></li>
-              <li><button className="dropdown-item text-danger" onClick={handleSignOut}>Sign Out</button></li>
+              <li>
+                <button className="dropdown-item text-warning" onClick={roomsOverview}>
+                  Rooms Overview
+                </button>
+              </li>
+              <li>
+                <button className="dropdown-item text-success" onClick={() => navigate('/findFaculty')}>
+                  Find Faculty
+                </button>
+              </li>
+              <li>
+                <button className="dropdown-item text-danger" onClick={handleSignOut}>
+                  Sign Out
+                </button>
+              </li>
             </ul>
           )}
         </div>
@@ -283,31 +315,36 @@ const Homepage = ({footerHeight}) => {
     </div>
   </div>
 
-  {/* Push content below fixed navbar */}
-  <div className="container mt-5 pt-5">
-    {/* Search Overlay */}
+  {/* Content Below Fixed Navbar */}
+  <div className="container-fluid pt-5" style={{ marginTop: '6.2rem' }}>
+    {/* Room Overlay */}
     {searchTerm !== '' && (
-      <div className="room-overlay" style={{
-        position: 'fixed',
-        top: '130px',
-        left: 0,
-        width: '100vw',
-        height: 'calc(100vh - 130px)',
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        zIndex: 999,
-        overflowY: 'auto',
-        padding: '20px',
-        paddingBottom: `${footerHeight}px`,
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        alignItems: 'flex-start'
-      }}>
+      <div
+        className="room-overlay"
+        style={{
+          position: 'fixed',
+          top: '130px',
+          left: 0,
+          width: '100vw',
+          height: 'calc(100vh - 130px)',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          zIndex: 999,
+          overflowY: 'auto',
+          padding: '20px',
+          paddingBottom: `${footerHeight}px`,
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          alignItems: 'flex-start'
+        }}
+      >
         {filteredRooms.length ? (
           filteredRooms.map((room, index) => (
-            <div className="room-card card p-2 shadow-sm m-2 d-flex flex-column align-items-center"
+            <div
+              className="room-card card p-2 shadow-sm m-2 d-flex flex-column align-items-center"
               key={index}
-              style={{ width: '100%', maxWidth: '220px', flex: '1 1 auto' }}>
+              style={{ width: '100%', maxWidth: '220px', flex: '1 1 auto' }}
+            >
               <h5 className="text-primary">{room.block_name.toUpperCase()}</h5>
               <h6>{room.room_name.toUpperCase()}</h6>
               <p className="small">Type: {room.room_type}</p>
@@ -323,50 +360,71 @@ const Homepage = ({footerHeight}) => {
       </div>
     )}
 
-    {/* Main Block List */}
+    {/* Block List */}
     {!block.length ? (
       <h1 className="text-center text-muted mt-4">No data found...</h1>
     ) : (
-      <div className={`row g-3 ${searchTerm !== '' ? 'blur-content' : ''}`}>
-        {block.map((e, index) => (
-          <div key={index} className="col-12 col-md-6 col-lg-3 mb-4">
-            <div
-              className="card block-card shadow-sm p-3 h-100"
-              onClick={() => navigate(`/aitam/${e.block_name}`)}
-              style={{ cursor: 'pointer', borderRadius: '15px' }}
-            >
-              <div className="card-content text-center">
-                <div className="img bg-light mb-3 rounded-circle d-flex align-items-center justify-content-center mx-auto"
-                  style={{ width: "80px", height: "80px" }}>
-                  <i className="bi bi-building fs-3 text-secondary"></i>
-                </div>
-                <h5 className="text-uppercase text-dark fw-bold mb-1">{e.block_name}</h5>
-                <p className="small text-muted">No of Floors: {e.floors.length}</p>
-              </div>
+      <div className={`row g-4 ${searchTerm !== '' ? 'blur-content' : ''}`}>
+       {block.map((e, index) => (
+  <div key={index} className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+    <div
+      className="card block-card shadow-sm p-3 d-flex flex-column align-items-center justify-content-center"
+      onClick={() => navigate(`/aitam/${e.block_name}`)}
+      style={{
+        cursor: 'pointer',
+        borderRadius: '14px',
+        minHeight: '160px',
+        maxHeight: '180px',
+        background: 'linear-gradient(to bottom right, #eaf6ff, #f5faff)',
+        boxShadow: '0 3px 10px rgba(0,0,0,0.05)',
+        transition: 'transform 0.2s ease-in-out',
+        padding: '16px'
+      }}
+      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.015)'}
+      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+    >
+      <div
+        className="d-flex align-items-center justify-content-center bg-white rounded-circle mb-2"
+        style={{
+          width: "58px",
+          height: "58px",
+          boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+        }}
+      >
+        <i className="bi bi-building fs-5 text-secondary"></i>
+      </div>
+      <h6 className="text-uppercase fw-bold text-dark mb-1" style={{ fontSize: '0.95rem' }}>
+        {e.block_name}
+      </h6>
+      <p className="small text-muted mb-0">No of Floors: {e.floors.length}</p>
 
-              {(access === 'super_admin' || e.block_name.toLowerCase() === dept) && (
-                <div className="d-flex justify-content-between mt-3">
-                  <button
-                    className="btn btn-outline-primary btn-sm w-100 me-2"
-                    onClick={(ev) => { ev.stopPropagation(); modifyBlock(e); }}
-                  >
-                    Modify
-                  </button>
-                  <button
-                    className="btn btn-outline-danger btn-sm w-100"
-                    onClick={(ev) => { ev.stopPropagation(); deleteBlock(e); }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
+      {(access === 'super_admin' || e.block_name.toLowerCase() === dept) && (
+        <div className="d-flex justify-content-between w-100 mt-3">
+          <button
+            className="btn btn-outline-primary btn-sm w-50 me-1"
+            onClick={(ev) => { ev.stopPropagation(); modifyBlock(e); }}
+          >
+            Modify
+          </button>
+          <button
+            className="btn btn-outline-danger btn-sm w-50 ms-1"
+            onClick={(ev) => { ev.stopPropagation(); deleteBlock(e); }}
+          >
+            Delete
+          </button>
+        </div>
+      )}
+    </div>
+  </div>
+))}
+
+
+
       </div>
     )}
   </div>
 </>
+
 
   );
 }
