@@ -177,80 +177,76 @@ const Homepage = ({footerHeight}) => {
    <>
   {/* Header/Navbar - Fixed */}
   <div
-    style={{
-      background: 'linear-gradient(90deg,#0066cc,#003366)',
-      padding: '12px 0',
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100%',
-      zIndex: 1000,
-      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
-    }}
-  >
-    <div className="container-fluid d-flex align-items-center justify-content-between flex-wrap">
-      <div
+  style={{
+    background: 'linear-gradient(90deg,#0066cc,#003366)',
+    padding: '12px 0',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    zIndex: 1000,
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+  }}
+>
+  <div className="container-fluid">
+    <div
+      className="d-flex flex-column flex-md-row align-items-center justify-content-between"
+      style={{
+        flexWrap: 'wrap',
+        rowGap: '10px',
+        padding: '0 10px',
+      }}
+    >
+      {/* Logo */}
+      <div style={{ flexShrink: 0 }}>
+        <img
+          src="logo2.webp"
+          alt="Logo"
+          style={{
+            height: '55px',
+            width: 'auto',
+            borderRadius: '10px',
+            boxShadow: '0 1px 6px rgba(255,255,255,0.1)',
+          }}
+        />
+      </div>
+
+      {/* Title */}
+      <h3
+        className="text-white text-center m-0"
         style={{
-          display: 'flex',
-          width: '100%',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap'
+          fontSize: 'clamp(1.3rem, 2.2vw, 2rem)',
+          fontWeight: '600',
+          letterSpacing: '0.5px',
+          textShadow: '0 1px 3px rgba(0,0,0,0.3)',
+          flexGrow: 1,
         }}
       >
-        {/* Logo */}
-        <div style={{ flex: '0 1 auto' }}>
-          <img
-            src="logo2.webp"
-            alt="Logo"
-            style={{
-              height: '55px',
-              width: 'auto',
-              marginLeft: '10px',
-              borderRadius: '10px',
-              boxShadow: '0 1px 6px rgba(255,255,255,0.1)'
-            }}
-          />
-        </div>
+        AITAM Digital Room Management Portal
+      </h3>
 
-        {/* Title */}
-        <h3
-          className="m-0 text-center text-white flex-grow-1"
-          style={{
-            fontSize: 'clamp(1.4rem, 2vw, 2rem)',
-            fontWeight: '600',
-            letterSpacing: '0.5px',
-            textShadow: '0 1px 3px rgba(0,0,0,0.3)'
-          }}
-        >
-          AITAM Digital Room Management Portal
-        </h3>
-
-        {/* Search Bar */}
-        <div
-          className="d-flex align-items-center my-2 my-md-0"
-          style={{
-            flex: '0 1 auto',
-            marginRight: '1cm',
-            width: '100%',
-            maxWidth: '260px'
-          }}
-        >
+      {/* Search and Hamburger Container */}
+      <div
+        className="d-flex align-items-center justify-content-end flex-nowrap gap-2"
+        style={{ flex: '0 0 auto', marginRight: '10px' }}
+      >
+        {/* Search input */}
+        <div style={{ maxWidth: '260px', width: '100%' }}>
           <input
             type="search"
-            className="form-control me-2"
+            className="form-control"
             placeholder="Search Rooms..!"
             onChange={(e) => handleSearch(e)}
             style={{
               backgroundColor: '#f0f0f0',
               border: '1px solid #ccc',
               borderRadius: '6px',
-              fontSize: '0.95rem'
+              fontSize: '0.95rem',
             }}
           />
         </div>
 
-        {/* Hamburger Menu */}
+        {/* Hamburger menu */}
         <div className="position-relative" ref={menuRef}>
           <button
             className="btn btn-outline-light"
@@ -258,7 +254,8 @@ const Homepage = ({footerHeight}) => {
             style={{
               borderRadius: '6px',
               padding: '6px 12px',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
+              whiteSpace: 'nowrap',
             }}
           >
             ☰
@@ -269,7 +266,7 @@ const Homepage = ({footerHeight}) => {
               style={{
                 minWidth: '180px',
                 borderRadius: '10px',
-                boxShadow: '0 4px 16px rgba(0,0,0,0.15)'
+                boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
               }}
             >
               {access === 'super_admin' && (
@@ -303,17 +300,33 @@ const Homepage = ({footerHeight}) => {
                   Find Faculty
                 </button>
               </li>
+               {access !== 'student' && (
+                <li>
+                  <a
+                    className="dropdown-item text-info"
+                    href="/sample-timetable.xlsx"
+                    download
+                  >
+                    Download Timetable
+                  </a>
+            </li>
+              )}
               <li>
                 <button className="dropdown-item text-danger" onClick={handleSignOut}>
                   Sign Out
                 </button>
               </li>
+             
+
             </ul>
           )}
         </div>
       </div>
     </div>
   </div>
+</div>
+
+
 
   {/* Content Below Fixed Navbar */}
   <div className="container-fluid pt-5" style={{ marginTop: '6.2rem' }}>
