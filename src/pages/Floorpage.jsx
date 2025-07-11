@@ -514,121 +514,89 @@ if (currentPeriod) {
       </Modal>
 
 
-      {/* <Card className="mb-4 bg-light shadow-lg" style={{ fontSize: "1.2rem" }}>
-        <Card.Body>
-          <Card.Title className="text-center text-primary fw-bold fs-4">
-            Floor Page for Block: <span style={{ color: "#333" }}>{block?.block_name}</span>
-          </Card.Title>
-          {err && <p className="text-danger text-center">{err}</p>}
-        </Card.Body>
-      </Card>
+      
+        <>
+              {/* Fixed Top Navbar-like Header */}
+              <div
+                className="container-fluid px-0 position-fixed top-0 start-0 w-100 shadow-sm"
+                style={{
+                  zIndex: 1050,
+                  background: 'linear-gradient(90deg, #3767cfff 0%, #2575fc 100%)',
+                  borderBottom: '3px solid #0047ab',
+                  color: 'white',
+                }}
+              >
+                <div className="container px-3 py-3">
+                  <Row className="align-items-center justify-content-between">
+                    {/* Title */}
+                    <Col xs={12} md="auto" className="mb-2 mb-md-0 text-center text-md-start">
+                      <h5 className="m-0 fw-bold">
+                        Floor Page for Block: <span className="text-light">{block?.block_name}</span>
+                      </h5>
+                      {err && <p className="text-warning mt-2">{err}</p>}
+                    </Col>
+
+                    {/* Buttons */}
+                    <Col xs={12} md="auto" className="text-center text-md-end">
+                      <Button
+                        variant="light"
+                        className="me-2 fw-semibold"
+                        onClick={() => navigate(`/${blockname}/showtimetable`)}
+                      >
+                        Show Timetable
+                      </Button>
+                      <Button variant="outline-light" className="fw-semibold" onClick={backtohome}>
+                        Back to Home
+                      </Button>
+                    </Col>
+                  </Row>
+                </div>
+              </div>
+
+              {/* Content Section with top spacing */}
+              <div style={{ marginTop: '100px' }}>
+                {!floorid && (
+                  <>
+                    {canEdit && (
+                      <Row className="justify-content-center my-4">
+                        <Col xs="auto">
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter floor name"
+                            value={floorName}
+                            onChange={(e) => setFloorName(e.target.value)}
+                          />
+                        </Col>
+                        <Col xs="auto">
+                          <Button variant="primary" onClick={handleAddFloor}>
+                            Add Floor
+                          </Button>
+                        </Col>
+                      </Row>
+                    )}
+
+                    <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+                      {block?.floors?.map((floor, index) => (
+                        <Col key={index}>
+                          <Card
+                            className="text-center border-0 shadow rounded-4 bg-primary-subtle h-100"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => displayRoom(floor)}
+                          >
+                            <Card.Body>
+                              <Card.Title className="fs-6 text-primary fw-bold">{floor.floor_name}</Card.Title>
+                              <Card.Text className="text-muted">{floor.rooms.length} Rooms</Card.Text>
+                            </Card.Body>
+                          </Card>
+                        </Col>
+                      ))}
+                    </Row>
+                  </>
+                )}
+              </div>
+       </>
 
 
-      <Row className="justify-content-end mb-3">
-        <Col xs="auto">
-          <Button variant="success" onClick={()=>{navigate(`/${blockname}/showtimetable`)}} size="lg">show Timetable</Button>
-        </Col>
-        <Col xs="auto">
-          <Button variant="danger" onClick={backtohome} size="lg">Back to Home</Button>
-        </Col>
-      </Row>
-
-
-      {loading ? (<Loader/>) :
-          (!floorid && (
-            <>
-              {canEdit && (
-                <Row className="justify-content-center mb-4">
-                  <Col xs="auto">
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter floor name"
-                      value={floorName}
-                      onChange={(e) => setFloorName(e.target.value)}
-                    />
-                  </Col>
-                  <Col xs="auto">
-                    <Button variant="primary" onClick={handleAddFloor}>Add Floor</Button>
-                  </Col>
-                </Row>
-              )}
-
-              <Row xs={1} sm={2} md={3} lg={4} className="g-4">
-                {block?.floors?.map((floor, index) => (
-                  <Col key={index}>
-                    <Card
-                      className="text-center border-0 shadow rounded-4 bg-primary-subtle h-100"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => displayRoom(floor)}
-                    >
-                      <Card.Body>
-                        <Card.Title className="fs-6 text-primary fw-bold">{floor.floor_name}</Card.Title>
-                        <Card.Text className="text-muted">{floor.rooms.length} Rooms</Card.Text>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-            </>
-        ))
-      } */}
-
-    <Card className="mb-4 border-0 bg-white shadow-sm rounded-4 p-3">
-        <Card.Body>
-          <Card.Title className="text-center text-primary fw-bold fs-4">
-            Floor Page for Block: <span className="text-dark">{block?.block_name}</span>
-          </Card.Title>
-          {err && <p className="text-danger text-center">{err}</p>}
-
-          <Row className="justify-content-end mb-3">
-            <Col xs="auto">
-              <Button variant="success" onClick={() => navigate(`/${blockname}/showtimetable`)}>
-                Show Timetable
-              </Button>
-            </Col>
-            <Col xs="auto">
-              <Button variant="outline-danger" onClick={backtohome}>Back to Home</Button>
-            </Col>
-          </Row>
-
-          {!floorid && (
-            <>
-              {canEdit && (
-                <Row className="justify-content-center mb-4">
-                  <Col xs="auto">
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter floor name"
-                      value={floorName}
-                      onChange={(e) => setFloorName(e.target.value)}
-                    />
-                  </Col>
-                  <Col xs="auto">
-                    <Button variant="primary" onClick={handleAddFloor}>Add Floor</Button>
-                  </Col>
-                </Row>
-              )}
-
-              <Row xs={1} sm={2} md={3} lg={4} className="g-4">
-                {block?.floors?.map((floor, index) => (
-                  <Col key={index}>
-                    <Card
-                      className="text-center border-0 shadow rounded-4 bg-primary-subtle h-100"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => displayRoom(floor)}
-                    >
-                      <Card.Body>
-                        <Card.Title className="fs-6 text-primary fw-bold">{floor.floor_name}</Card.Title>
-                        <Card.Text className="text-muted">{floor.rooms.length} Rooms</Card.Text>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-            </>
-          )}
-        </Card.Body>
-      </Card>
 
 
 
