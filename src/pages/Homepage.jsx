@@ -329,113 +329,109 @@ const Homepage = ({footerHeight}) => {
 
 
   {/* Content Below Fixed Navbar */}
-  <div className="container-fluid pt-5" style={{ marginTop: '6.2rem' }}>
-    {/* Room Overlay */}
-    {searchTerm !== '' && (
-      <div
-        className="room-overlay"
-        style={{
-          position: 'fixed',
-          top: '130px',
-          left: 0,
-          width: '100vw',
-          height: 'calc(100vh - 130px)',
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          zIndex: 999,
-          overflowY: 'auto',
-          padding: '20px',
-          paddingBottom: `${footerHeight}px`,
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          alignItems: 'flex-start'
-        }}
-      >
-        {filteredRooms.length ? (
-          filteredRooms.map((room, index) => (
+  <div style={{ paddingTop: '150px', paddingInline: '12px' }}>
+      {/* Search Results */}
+        {searchTerm !== '' && (
+    <div
+      className="room-overlay"
+      style={{
+        position: 'fixed',
+        top: '130px',
+        left: 0,
+        width: '100vw',
+        height: 'calc(100vh - 130px)',
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        zIndex: 999,
+        overflowY: 'auto',
+        paddingTop: '50px',         // ⬅ Top padding for header space
+    paddingBottom: '100px', 
+        // paddingBottom: `${footerHeight}px`,
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+      }}
+    >
+      {filteredRooms.length ? (
+        filteredRooms.map((room, index) => {
+          // Guard clause to skip invalid room data
+          if (!room || !room.block_name || !room.room_name) return null;
+
+          return (
             <div
               className="room-card card p-2 shadow-sm m-2 d-flex flex-column align-items-center"
               key={index}
               style={{ width: '100%', maxWidth: '220px', flex: '1 1 auto' }}
             >
-              <h5 className="text-primary">{room.block_name.toUpperCase()}</h5>
-              <h6>{room.room_name.toUpperCase()}</h6>
-              <p className="small">Type: {room.room_type}</p>
-              <p className="small">Capacity: {room.room_capacity}</p>
-              <p className={room.occupied ? 'text-danger fw-bold' : 'text-success fw-bold'}>
+              <h5 className="text-primary">
+                {(room.block_name || '').toUpperCase()}
+              </h5>
+             <h6 style={{ textAlign: 'center' }}>
+                {(room.room_name || '').toUpperCase()}
+              </h6>
+              <p className="small">Type: {room.room_type || 'N/A'}</p>
+              <p className="small">Capacity: {room.room_capacity || 'N/A'}</p>
+              <p
+                className={
+                  room.occupied ? 'text-danger fw-bold' : 'text-success fw-bold'
+                }
+              >
                 {room.occupied ? 'Occupied' : 'Available'}
               </p>
             </div>
-          ))
-        ) : (
-          <h3 className="text-center text-muted">NO Matching Rooms...</h3>
-        )}
-      </div>
-    )}
+          );
+        })
+      ) : (
+        <h3 className="text-center text-muted">NO Matching Rooms...</h3>
+      )}
+    </div>
+      )}
 
-    {/* Block List */}
-    {!block.length ? (
-      <h1 className="text-center text-muted mt-4">No data found...</h1>
-    ) : (
-      <div className={`row g-4 ${searchTerm !== '' ? 'blur-content' : ''}`}>
-       {block.map((e, index) => (
-  <div key={index} className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-    <div
-      className="card block-card shadow-sm p-3 d-flex flex-column align-items-center justify-content-center"
-      onClick={() => navigate(`/aitam/${e.block_name}`)}
-      style={{
-        cursor: 'pointer',
-        borderRadius: '14px',
-        minHeight: '160px',
-        maxHeight: '180px',
-        background: 'linear-gradient(to bottom right, #eaf6ff, #f5faff)',
-        boxShadow: '0 3px 10px rgba(0,0,0,0.05)',
-        transition: 'transform 0.2s ease-in-out',
-        padding: '16px'
-      }}
-      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.015)'}
-      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-    >
-      <div
-        className="d-flex align-items-center justify-content-center bg-white rounded-circle mb-2"
-        style={{
-          width: "58px",
-          height: "58px",
-          boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
-        }}
-      >
-        <i className="bi bi-building fs-5 text-secondary"></i>
-      </div>
-      <h6 className="text-uppercase fw-bold text-dark mb-1" style={{ fontSize: '0.95rem' }}>
-        {e.block_name}
-      </h6>
-      <p className="small text-muted mb-0">No of Floors: {e.floors.length}</p>
+      {/* Main Block Cards */}
+      {!block.length ? (
+        <h1 className="text-center text-muted mt-4">No data found...</h1>
+      ) : (
+        <div className={`row g-2 ${searchTerm !== '' ? 'blur-content' : ''}`}
+          // style={{ marginTop: '28px' }}
+          style={{ paddingTop: '30px', paddingBottom: '30px' }}
+        >
+          {block.map((e, index) => (
+            <div key={index} className="col-12 col-md-6 col-lg-3">
+              <div
+                className="card block-card shadow-sm p-3"
+                onClick={() => navigate(`/aitam/${e.block_name}`)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="card-content text-center">
+                  <div className="img bg-light mb-3 rounded-circle d-flex align-items-center justify-content-center mx-auto" style={{ width: "80px", height: "80px" }}>
+                    <i className="bi bi-building fs-3 text-secondary"></i>
+                  </div>
+                  <h5 className="text-uppercase text-dark fw-bold mb-1">{e.block_name}</h5>
+                  <p className="small text-muted">No of Floors: {e.floors.length}</p>
+                </div>
 
-      {(access === 'super_admin' || e.block_name.toLowerCase() === dept) && (
-        <div className="d-flex justify-content-between w-100 mt-3">
-          <button
-            className="btn btn-outline-primary btn-sm w-50 me-1"
-            onClick={(ev) => { ev.stopPropagation(); modifyBlock(e); }}
-          >
-            Modify
-          </button>
-          <button
-            className="btn btn-outline-danger btn-sm w-50 ms-1"
-            onClick={(ev) => { ev.stopPropagation(); deleteBlock(e); }}
-          >
-            Delete
-          </button>
+                {(access === 'super_admin' || e.block_name.toLowerCase() === dept) && (
+                  <div className="d-flex justify-content-between mt-3">
+                    <button
+                      className="btn btn-outline-primary btn-sm w-100 me-2"
+                      onClick={(ev) => { ev.stopPropagation(); modifyBlock(e); }}
+                    >
+                      Modify
+                    </button>
+                    <button
+                      className="btn btn-outline-danger btn-sm w-100"
+                      onClick={(ev) => { ev.stopPropagation(); deleteBlock(e); }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
-  </div>
-))}
-
-
-
-      </div>
-    )}
-  </div>
 </>
 
 
