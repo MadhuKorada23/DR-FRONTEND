@@ -69,7 +69,7 @@ const Roomform = () => {
         type="text"
         className="room-input"
         value={roomId+"-"}
-        onChange={(e) => setRoomId(e.target.value)}
+        onChange={(e) => setRoomId(e.target.value.trim())}
         placeholder="Enter room Id"
         required
       />
@@ -77,7 +77,7 @@ const Roomform = () => {
         type="text"
         className="room-input"
         value={roomName}
-        onChange={(e) => setRoomName(e.target.value)}
+        onChange={(e) => setRoomName(e.target.value.trim())}
         placeholder="Enter room name"
         required
       />
@@ -85,7 +85,7 @@ const Roomform = () => {
         type="text"
         className="room-input"
         value={roomType}
-        onChange={(e) => setRoomType(e.target.value)}
+        onChange={(e) => setRoomType(e.target.value.trim())}
         placeholder="Enter room type"
         required
       />
@@ -93,7 +93,7 @@ const Roomform = () => {
         type="number"
         className="room-input"
         value={roomCapacity}
-        onChange={(e) => setRoomCapacity(Number(e.target.value))}
+        onChange={(e) => setRoomCapacity(Number(e.target.value.trim()))}
         placeholder="Enter room capacity"
         required
       />

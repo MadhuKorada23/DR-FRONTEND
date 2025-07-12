@@ -232,7 +232,7 @@ const fetchTimetables = async()=>{
       const workbook = XLSX.read(binaryStr, { type: "binary" });
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
-      const parsedData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+      const parsedData = XLSX.utils.sheet_to_json(sheet, { defval: "-" });
       setPreviewData(parsedData);
     };
   }
@@ -367,9 +367,10 @@ if (currentPeriod) {
 
 
     } catch (err) {
-      console.error(err.response?.data || err.message);
-      alert("Upload failed!");
-    }
+    
+  alert("Upload failed!");
+}
+
   };
  
 
