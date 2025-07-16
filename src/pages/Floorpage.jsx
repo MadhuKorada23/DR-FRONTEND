@@ -135,12 +135,13 @@ const toggleFlip = (index) => {
       const now = new Date();
       let hour = now.getHours();
       const minute = now.getMinutes();
-      hour = hour % 12;
-      hour = hour ? hour : 12;
+      // hour = hour % 12;
+      // hour = hour ? hour : 12;
       const periodinfo = getCurrentPeriod(timetable, hour, minute);
       // console.log(periodinfo)
+      const shouldBeOccupied = (periodinfo.status === "Ongoing" && periodinfo.faculty!="-");
      
-      const shouldBeOccupied = periodinfo.status === "Ongoing";
+      // const shouldBeOccupied = periodinfo.status === "Ongoing";
       if (room.occupied !== shouldBeOccupied) {
         try {
           await fetch(`https://dr-backend-32ec.onrender.com/block/floors/room/${block._id}/${floorid._id}/${room._id}`, {
@@ -301,6 +302,7 @@ const getCurrentPeriod = (timetable, testHour = null, testMin = null) => {
 if (currentPeriod) {
   return {
     status: "Ongoing",
+    faculty:currentPeriod.faculty,
     info: (
       <div className="text-start text-dark px-3 py-2">
         <div className="mb-2">
