@@ -145,7 +145,11 @@ const Homepage = ({footerHeight}) => {
       if (window.confirm(`Are you sure you want to delete ${e.block_name}?`)) {
         await axios.delete(`https://dr-backend-32ec.onrender.com/block/delete-data/${e._id}`);
         toast.success(`${e.block_name} has been deleted successfully`);
+
+        //Remove the Block's timetable from the data Base..
+        await axios.delete(`https://dr-backend-32ec.onrender.com/periods/delete/${e.block_name}`)
         
+        //Update the block data...
         const details = await axios.get("https://dr-backend-32ec.onrender.com/block/get-data");
         setBlock(details.data);
       }

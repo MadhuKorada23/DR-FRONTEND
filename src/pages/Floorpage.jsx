@@ -19,9 +19,6 @@ const Loader = ({ text = "Loading...", centered = true }) => {
   );
 };
 
-
-
-
 const Floorpage = () => {
   const navigate = useNavigate();
   const { blockname } = useParams();
@@ -51,6 +48,7 @@ const Floorpage = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterRoomType, setFilterRoomType] = useState("all");
   const [loading,setLoading] = useState(false)
+  const [uploadLoading,setuploadLoading] = useState(false)
   const [timetables, setTimetables] = useState([]);
    const [selectedFile, setSelectedFile] = useState(null);
   const [previewData, setPreviewData] = useState([]);
@@ -270,7 +268,7 @@ const getCurrentPeriod = (timetable, testHour = null, testMin = null) => {
   const currentTime = currentHour * 60 + currentMin;
 
 
-  if (currentTime > 16 * 60 + 10) return { status: "No Classes" };
+  if (currentTime > (16 * 60 + 10) || currentTime < (9*60+15) ) return { status: "NoClass" };
 
 
   const todayData = timetable.find(day => day.dayName === today);
@@ -340,40 +338,42 @@ if (currentPeriod) {
 };
 
 
-  const handleUpload = async (room) => {
-    // console.log("name");
-    if (!selectedFile || !room) {
-      toast.warn("Please provide class name and upload a file.");
-      return;
-    }
-   
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-    formData.append('className', room);
-    formData.append('blockName', blockname);
+    const handleUpload = async (room) => {
+      
+        if (!selectedFile || !room) {
+          toast.warn("Please provide class name and upload a file.");
+          return;
+        }
+      
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        formData.append('className', room);
+        formData.append('blockName', blockname);
 
 
-    try {
-      const res = await axios.post('https://dr-backend-32ec.onrender.com/periods/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+        try {
+          setuploadLoading(true)
+          const res = await axios.post('https://dr-backend-32ec.onrender.com/periods/upload', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          });
 
 
-      const data = await res.data;
+          const data = await res.data;
 
 
-      fetchTimetables();//update the timetables after uploading new timetable...
+          fetchTimetables();//update the timetables after uploading new timetable...
 
 
-      alert(data.message);
+          alert(data.message);
 
 
-    } catch (err) {
-    
-  alert("Upload failed!");
-}
-
-  };
+        } catch (err) {
+          setuploadLoading(false)
+          alert("Upload failed!");
+      }finally{
+        setuploadLoading(false)
+      }
+    };
  
 
 
@@ -516,7 +516,6 @@ if (currentPeriod) {
         </Modal.Footer>
       </Modal>
 
-
       
         <>
               {/* Fixed Top Navbar-like Header */}
@@ -541,13 +540,17 @@ if (currentPeriod) {
 
                     {/* Buttons */}
                     <Col xs={12} md="auto" className="text-center text-md-end">
-                      <Button
-                        variant="light"
-                        className="me-2 fw-semibold"
-                        onClick={() => navigate(`/${blockname}/showtimetable`)}
-                      >
-                        Show Timetable
-                      </Button>
+                      {(access!="student") &&
+                        <>
+                          <Button
+                            variant="light"
+                            className="me-2 fw-semibold"
+                            onClick={() => navigate(`/${blockname}/showtimetable`)}
+                          >
+                          Show Timetable
+                          </Button>
+                        </>
+                      }
                       <Button variant="outline-light" className="fw-semibold" onClick={backtohome}>
                         Back to Home
                       </Button>
@@ -558,49 +561,55 @@ if (currentPeriod) {
 
               {/* Content Section with top spacing */}
               <div style={{ marginTop: '100px' }}>
-                {!floorid && (
-                  <>
-                    {canEdit && (
-                      <Row className="justify-content-center my-4">
-                        <Col xs="auto">
-                          <Form.Control
-                            type="text"
-                            placeholder="Enter floor name"
-                            value={floorName}
-                            onChange={(e) => setFloorName(e.target.value)}
-                          />
-                        </Col>
-                        <Col xs="auto">
-                          <Button variant="primary" onClick={handleAddFloor}>
-                            Add Floor
-                          </Button>
-                        </Col>
-                      </Row>
-                    )}
+                {loading ? (
+                  <Loader /> // Show loader when loading is true
+                ) : (
+                  !floorid && (
+                    <>
+                      {canEdit && (
+                        <Row className="justify-content-center my-4">
+                          <Col xs="auto">
+                            <Form.Control
+                              type="text"
+                              placeholder="Enter floor name"
+                              value={floorName}
+                              onChange={(e) => setFloorName(e.target.value)}
+                            />
+                          </Col>
+                          <Col xs="auto">
+                            <Button variant="primary" onClick={handleAddFloor}>
+                              Add Floor
+                            </Button>
+                          </Col>
+                        </Row>
+                      )}
 
-                    <Row xs={1} sm={2} md={3} lg={4} className="g-4">
-                      {block?.floors?.map((floor, index) => (
-                        <Col key={index}>
-                          <Card
-                            className="text-center border-0 shadow rounded-4 bg-primary-subtle h-100"
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => displayRoom(floor)}
-                          >
-                            <Card.Body>
-                              <Card.Title className="fs-6 text-primary fw-bold">{floor.floor_name}</Card.Title>
-                              <Card.Text className="text-muted">{floor.rooms.length} Rooms</Card.Text>
-                            </Card.Body>
-                          </Card>
-                        </Col>
-                      ))}
-                    </Row>
-                  </>
+                      <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+                        {block?.floors?.map((floor, index) => (
+                          <Col key={index}>
+                            <Card
+                              className="text-center border-0 shadow rounded-4 bg-primary-subtle h-100"
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => displayRoom(floor)}
+                            >
+                              <Card.Body>
+                                <Card.Title className="fs-6 text-primary fw-bold">
+                                  {floor.floor_name}
+                                </Card.Title>
+                                <Card.Text className="text-muted">
+                                  {floor.rooms.length} Rooms
+                                </Card.Text>
+                              </Card.Body>
+                            </Card>
+                          </Col>
+                        ))}
+                      </Row>
+                    </>
+                  )
                 )}
               </div>
+
        </>
-
-
-
 
 
       {floorid && (
@@ -706,7 +715,7 @@ if (currentPeriod) {
                           <Modal.Title>{room.room_name}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                          {timetable ? (
+                          {timetable && periodinfo.status!="NoClass" ? (
                             <p className="text-center">
                               {periodinfo.status === "Ongoing" ? (
                                 <span className="text-success fw-bold">{periodinfo.info}</span>
@@ -735,8 +744,16 @@ if (currentPeriod) {
                                     variant="success"
                                     onClick={() => handleUpload(room.room_name)}
                                     className="mb-2 w-100"
+                                    disabled={uploadLoading}
                                   >
-                                    Upload Timetable
+                                    {uploadLoading ? (
+                                      <>
+                                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        &nbsp;Uploading in...
+                                      </>
+                                    ) : (
+                                      "Upload Timetable"
+                                    )}
                                   </Button>
                                 </>
                               )}
