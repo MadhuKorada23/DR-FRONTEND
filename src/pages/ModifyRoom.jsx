@@ -26,35 +26,11 @@ const ModifyRoom = () => {
     setIsOccupied(Room.occupied); 
   }, []);
 
-  // const handleModifyRoom = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     await axios.put(
-  //       `http://localhost:5000/block/floors/room/${Block._id}/${floor._id}/${Room._id}`,
-  //       {
-  //         room_id: roomId,
-  //         room_name: roomName,
-  //         room_type: roomType,
-  //         room_capacity: roomCapacity,
-  //         occupied: isOccupied, 
-  //       }
-  //     );
-
-  //     alert("Room modified successfully.");
-  //     navigate(`/aitam/${Block.block_name}`, {
-  //        state: { block: Block, },
-
-  //        });
-  //   } catch (error) {
-  //     setErr("Failed to modify room");
-  //     console.error(error);
-  //   }
-  // };
-
+  
   const handleModifyRoom = async (e) => {
   e.preventDefault();
   try {
-    // 1. Prepare updated room
+   
     const updatedRoom = {
       room_id: roomId,
       room_name: roomName,
@@ -62,10 +38,10 @@ const ModifyRoom = () => {
       room_capacity: roomCapacity,
       occupied: isOccupied,
       lastModifiedDate:new Date(),
-      _id: Room._id, // include _id to match original room
+      _id: Room._id, 
     };
 
-    // 2. Send to server
+    
     await axios.put(
       `https://dr-backend-32ec.onrender.com/block/floors/room/${Block._id}/${floor._id}/${Room._id}`,
       {
