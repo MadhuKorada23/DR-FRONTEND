@@ -124,7 +124,46 @@ const toggleFlip = (index) => {
 );
 
 
-  useEffect(()=>{
+  // useEffect(()=>{
+  //   const updateOccupancy = async () => {
+  //   for (const room of roomdata) {
+  //     const timetable = timetableMap[room.room_name];
+ 
+  //     if (!timetable) continue;
+  //     const now = new Date();
+  //     let hour = now.getHours();
+  //     const minute = now.getMinutes();
+  //     // hour = hour % 12;
+  //     // hour = hour ? hour : 12;
+  //     const periodinfo = getCurrentPeriod(timetable, hour, minute);
+  //     // console.log(periodinfo)
+  //     const shouldBeOccupied = (periodinfo.status === "Ongoing" && periodinfo.faculty!="-");
+     
+  //     // const shouldBeOccupied = periodinfo.status === "Ongoing";
+  //     if (room.occupied !== shouldBeOccupied) {
+  //       try {
+  //         await fetch(`https://dr-backend-32ec.onrender.com/block/floors/room/${block._id}/${floorid._id}/${room._id}`, {
+  //           method: 'PUT',
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //           },
+  //           body: JSON.stringify({ occupied: shouldBeOccupied }),
+  //         });
+  //         // console.log(`Updated occupancy for ${room.room_name}`);
+  //       } catch (error) {
+  //         console.error(`Failed to update room ${room.room_name}:`, error);
+  //       }
+  //     }
+  //   }
+  // };
+
+
+
+
+  // updateOccupancy();
+  // },[timetables])
+
+    useEffect(()=>{
     const updateOccupancy = async () => {
     for (const room of roomdata) {
       const timetable = timetableMap[room.room_name];
@@ -158,10 +197,19 @@ const toggleFlip = (index) => {
   };
 
 
+    const interval = setInterval(() => {
+    if (roomdata.length > 0) updateOccupancy();
+  }, 60000);
 
 
-  updateOccupancy();
-  },[timetables])
+
+
+  return () => clearInterval(interval);
+
+
+  // updateOccupancy();
+  },[roomdata,timetables])
+
 
 
 //Taking the floorDetails from the sessionStorage....
@@ -784,218 +832,6 @@ if (currentPeriod) {
         </>
       )}
 
-
-     
-      {/* `{floorid && (
-        <>
-          <Row className="justify-content-center mb-3">
-            <Col xs="auto">
-              <Form.Control
-                type="text"
-                placeholder="🔍 Search Room"
-                value={roomSearch}
-                onChange={(e) => setRoomSearch(e.target.value)}
-                size="lg"
-                className="rounded-pill px-4 shadow-sm"
-                style={{ width: "300px" }}
-              />
-            </Col>
-          </Row>
-
-
-          <Row className="mb-3 align-items-center">
-            <Col>
-              <h5 className="fw-bold">🏢 Rooms in Floor: {floorid.floor_name}</h5>
-            </Col>
-            <Col xs="auto">
-              {canEdit && (
-                <>
-                  <Button
-                    variant="primary"
-                    className="me-2 shadow-sm"
-                    size="lg"
-                    onClick={addRooms}
-                  >
-                    ➕ Add Room
-                  </Button>
-                  <Button
-                    variant="danger"
-                    className="shadow-sm"
-                    size="lg"
-                    onClick={confirmDeleteFloor}
-                  >
-                    🗑️ Delete Floor
-                  </Button>
-                </>
-              )}
-              <Button
-                variant="outline-secondary"
-                className="ms-2 shadow-sm"
-                size="lg"
-                onClick={backToFloors}
-              >
-                🔙 Back to Floors
-              </Button>
-            </Col>
-          </Row>
-
-
-          <Row className="mb-3">
-            <Col xs="auto">
-              <Form.Select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-                size="lg"
-                className="shadow-sm"
-              >
-                <option value="all">All</option>
-                <option value="occupied">Occupied</option>
-                <option value="empty">Empty</option>
-              </Form.Select>
-            </Col>
-          </Row>
-
-
-          {roomdata.length > 0 ? (
-            <Row xs={1} sm={2} md={3} lg={4} className="g-4">
-              {roomdata
-                .filter(room =>
-                  (filterStatus === "all" ||
-                    (filterStatus === "occupied" && room.occupied) ||
-                    (filterStatus === "empty" && !room.occupied)) &&
-                  (filterRoomType === "all" ||
-                    room.room_type.toLowerCase().replace(/\s+/g, '') ===
-                    filterRoomType.replace(/\s+/g, '')) &&
-                  room.room_name.toLowerCase().includes(roomSearch.toLowerCase())
-                )
-                .map((room, index) => {
-                  const timetable = timetableMap[room.room_name] ?? null;
-                  let periodinfo = null;
-
-
-                  if (timetable) {
-                    const now = new Date();
-                    const hour = now.getHours();
-                    const minute = now.getMinutes();
-                    periodinfo = getCurrentPeriod(timetable, hour, minute);
-                  }
-
-
-                  const isExpanded = expandedRoom === index;
-                  const cardOpacity = expandedRoom !== null && expandedRoom !== index ? 0.4 : 1;
-
-
-                  return (
-                    <Col key={index}>
-                      <Card
-                        className="shadow-sm border-0 rounded"
-                        style={{
-                          backgroundColor: room.occupied ? "#f8d7da" : "#d4edda",
-                          opacity: cardOpacity,
-                          transition: "all 0.3s ease-in-out",
-                          cursor: "pointer",
-                          padding: "0.75rem",
-                        }}
-                        onClick={() => setExpandedRoom(isExpanded ? null : index)}
-                      >
-                        <Card.Body className="p-2">
-                          <div className="d-flex justify-content-between align-items-center">
-                            <h6 className="fw-bold mb-1">{room.room_name}</h6>
-                            <i
-                              className={`bi ${room.occupied ? "bi-lock-fill" : "bi-unlock"}`}
-                              style={{
-                                fontSize: "1.2rem",
-                                color: room.occupied ? "red" : "green",
-                              }}
-                            ></i>
-                          </div>
-                          <small className="text-muted">ID: {room.room_id}</small>
-
-
-                          {isExpanded && (
-                            <div className="mt-2" style={{ fontSize: "0.85rem" }}>
-                              {timetable ? (
-                                <>
-                                  {periodinfo.status === "Ongoing" ? (
-                                    <Card.Text className="text-success text-center fw-semibold">
-                                      {periodinfo.info}
-                                    </Card.Text>
-                                  ) : (
-                                    <Card.Text className="text-muted text-center">
-                                      {periodinfo.status}
-                                    </Card.Text>
-                                  )}
-                                </>
-                              ) : (
-                                <>
-                                  <Card.Text><strong>Type:</strong> {room.room_type}</Card.Text>
-                                  <Card.Text><strong>Capacity:</strong> {room.room_capacity}</Card.Text>
-                                  <Card.Text><strong>Status:</strong> {room.occupied ? "Occupied" : "Empty"}</Card.Text>
-                                  <Card.Text>
-                                    <strong>Last Modified:</strong>{" "}
-                                    {formatDistanceToNow(new Date(room.lastModifiedDate), { addSuffix: true })}
-                                  </Card.Text>
-                                </>
-                              )}
-
-
-                              {canEdit && (
-                                <div className="mt-2">
-                                  {!timetable && (
-                                    <>
-                                      <input
-                                        type="file"
-                                        onChange={handleFileUpload}
-                                        className="form-control mb-2"
-                                      />
-                                      <Button
-                                        size="sm"
-                                        variant="success"
-                                        onClick={() => handleUpload(room.room_name)}
-                                        className="mb-2 w-100"
-                                      >
-                                        Upload
-                                      </Button>
-                                    </>
-                                  )}
-
-
-                                  <Card.Footer className="d-flex justify-content-between p-1 bg-transparent border-0">
-                                    {!timetable ? (
-                                      <>
-                                        <Button size="sm" variant="info" onClick={() => modifyRoom(room)}>
-                                          Modify
-                                        </Button>
-                                        <Button size="sm" variant="danger" onClick={() => confirmDeleteRoom(room)}>
-                                          Delete
-                                        </Button>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <Button size="sm" variant="danger" onClick={() => deleteTimetableByClass(room.room_name)}>
-                                          Remove Timetable
-                                        </Button>
-                                        <Button size="sm" variant="danger" onClick={() => confirmDeleteRoom(room)}>
-                                          Delete Room
-                                        </Button>
-                                      </>
-                                    )}
-                                  </Card.Footer>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </Card.Body>
-                      </Card>
-                    </Col>
-                  );
-                })}
-            </Row>
-          ) : (
-            <p className="text-center mt-4">No rooms found.</p>
-          )}
-        </>
-      )}` */}
     </Container>
   );
 };
