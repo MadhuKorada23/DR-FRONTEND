@@ -1,14 +1,10 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { formatDistanceToNow } from "date-fns";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Modal, Button, Form, Card, Row, Col, Container } from "react-bootstrap";
-import * as XLSX from "xlsx";
-
 
 const Loader = ({ text = "Loading...", centered = true }) => {
   return (
@@ -22,426 +18,147 @@ const Loader = ({ text = "Loading...", centered = true }) => {
 const Floorpage = () => {
   const navigate = useNavigate();
   const { blockname } = useParams();
+
   const [block, setBlock] = useState(() => {
-  try {
-    const savedBlock = localStorage.getItem("block");
-    return savedBlock ? JSON.parse(savedBlock) : null;
-  } catch (err) {
-    console.error("Invalid JSON in localStorage for 'block':", err);
-    localStorage.removeItem("block"); // Optional: clear corrupted value
-    return null;
-  }
-});
+    try {
+      const savedBlock = localStorage.getItem("block");
+      return savedBlock ? JSON.parse(savedBlock) : null;
+    } catch (err) {
+      console.error("Invalid JSON in localStorage for 'block':", err);
+      localStorage.removeItem("block");
+      return null;
+    }
+  });
 
-
-  // const [block, setBlock] = useState(() => JSON.parse(localStorage.getItem("block")) || null);
   const [floorid, setFloorid] = useState(null);
   const [floorName, setFloorName] = useState("");
   const [roomdata, setRoomData] = useState([]);
-  const [roomSearch, setRoomSearch] = useState("");
   const [dept, setdept] = useState("");
   const [err, setErr] = useState("");
   const [access, setaccess] = useState("");
   const [showDialog, setShowDialog] = useState(false);
   const [dialogType, setDialogType] = useState("");
   const [selectedRoom, setSelectedRoom] = useState(null);
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [filterRoomType, setFilterRoomType] = useState("all");
-  const [loading,setLoading] = useState(false)
-  const [uploadLoading,setuploadLoading] = useState(false)
-  const [timetables, setTimetables] = useState([]);
-   const [selectedFile, setSelectedFile] = useState(null);
-  const [previewData, setPreviewData] = useState([]);
-  const [flippedCards, setFlippedCards] = useState({});
-  const [expandedRoom, setExpandedRoom] = useState(null);
 
+  const [loading, setLoading] = useState(false);
 
-const toggleFlip = (index) => {
-  setFlippedCards((prev) => ({
-    ...prev,
-    [index]: !prev[index],
-  }));
-};
-
-
-
+  // Notices
+  const [notices, setNotices] = useState([]);
+    const [blockNotices, setBlockNotices] = useState([]);
+const [globalNotices, setGlobalNotices] = useState([]);
+  const [newNotice, setNewNotice] = useState("");
+  const [loadingNotices, setLoadingNotices] = useState(false);
+  const [showNoticeModal, setShowNoticeModal] = useState(false);
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (token) {
       try {
-        setLoading(true)
+        setLoading(true);
         const decode = jwtDecode(token);
         setaccess(decode.role);
         setdept(decode.dept);
       } catch (error) {
         console.error("Invalid token");
         navigate("/login");
-      }finally{
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
     }
 
-
     const fetchBlockData = async () => {
       try {
-        setLoading(true)
-        const response = await axios.get(`https://dr-backend-32ec.onrender.com/block/get-data-name/${blockname}`);
+        setLoading(true);
+        const response = await axios.get(
+          `https://dr-backend-32ec.onrender.com/block/get-data-name/${blockname}`
+        );
         setBlock(response.data);
         localStorage.setItem("block", JSON.stringify(response.data));
       } catch (error) {
         setErr("Failed to fetch updated block data");
         console.error(error);
-      }finally{
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
     };
-
 
     if (blockname) fetchBlockData();
- 
-    fetchTimetables()
- 
- 
-    const interval = setInterval(() => {
-    if (roomdata.length > 0) fetchTimetables();
-  }, 60000);
-
-
-  return () => clearInterval(interval);
-
-
-  }, [blockname,roomdata]);
-
-
-  //make the timetable array into a object of {className,timetableData}
-  const timetableMap = React.useMemo(
-  () =>
-    Object.fromEntries(
-      timetables.map(t => [t.className, t.timetableData]) // { "XYZ": […], "2 CSE C": […] }
-    ),
-  [timetables]
-);
-
-
-  // useEffect(()=>{
-  //   const updateOccupancy = async () => {
-  //   for (const room of roomdata) {
-  //     const timetable = timetableMap[room.room_name];
- 
-  //     if (!timetable) continue;
-  //     const now = new Date();
-  //     let hour = now.getHours();
-  //     const minute = now.getMinutes();
-  //     // hour = hour % 12;
-  //     // hour = hour ? hour : 12;
-  //     const periodinfo = getCurrentPeriod(timetable, hour, minute);
-  //     // console.log(periodinfo)
-  //     const shouldBeOccupied = (periodinfo.status === "Ongoing" && periodinfo.faculty!="-");
-     
-  //     // const shouldBeOccupied = periodinfo.status === "Ongoing";
-  //     if (room.occupied !== shouldBeOccupied) {
-  //       try {
-  //         await fetch(`https://dr-backend-32ec.onrender.com/block/floors/room/${block._id}/${floorid._id}/${room._id}`, {
-  //           method: 'PUT',
-  //           headers: {
-  //             'Content-Type': 'application/json',
-  //           },
-  //           body: JSON.stringify({ occupied: shouldBeOccupied }),
-  //         });
-  //         // console.log(`Updated occupancy for ${room.room_name}`);
-  //       } catch (error) {
-  //         console.error(`Failed to update room ${room.room_name}:`, error);
-  //       }
-  //     }
-  //   }
-  // };
-
-
-
-
-  // updateOccupancy();
-  // },[timetables])
-
-    useEffect(()=>{
-    const updateOccupancy = async () => {
-    for (const room of roomdata) {
-      const timetable = timetableMap[room.room_name];
- 
-      if (!timetable) continue;
-      const now = new Date();
-      let hour = now.getHours();
-      const minute = now.getMinutes();
-      // hour = hour % 12;
-      // hour = hour ? hour : 12;
-      const periodinfo = getCurrentPeriod(timetable, hour, minute);
-      // console.log(periodinfo)
-      const shouldBeOccupied = (periodinfo.status === "Ongoing" && periodinfo.faculty!="-");
-     
-      // const shouldBeOccupied = periodinfo.status === "Ongoing";
-      if (room.occupied !== shouldBeOccupied) {
-        try {
-          await fetch(`https://dr-backend-32ec.onrender.com/block/floors/room/${block._id}/${floorid._id}/${room._id}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ occupied: shouldBeOccupied }),
-          });
-          // console.log(`Updated occupancy for ${room.room_name}`);
-        } catch (error) {
-          console.error(`Failed to update room ${room.room_name}:`, error);
-        }
-      }
-    }
-  };
-
-
-    const interval = setInterval(() => {
-    if (roomdata.length > 0) updateOccupancy();
-  }, 60000);
-
-
-
-
-  return () => clearInterval(interval);
-
-
-  // updateOccupancy();
-  },[roomdata,timetables])
-
-
-
-//Taking the floorDetails from the sessionStorage....
-
+  }, [blockname, roomdata]);
 
 useEffect(() => {
-  const savedFloor = sessionStorage.getItem("selectedFloor");
-
-
-  if (savedFloor) {
+  const fetchNotices = async () => {
     try {
-      const parsedFloor = JSON.parse(savedFloor);
-      setFloorid(parsedFloor);
-      setRoomData(parsedFloor.rooms);
-    } catch (error) {
-      console.error("Invalid JSON in sessionStorage for 'selectedFloor'", error);
-      sessionStorage.removeItem("selectedFloor");
-setFloorid(null);
-      setRoomData([]);
+      setLoadingNotices(true);
+
+      const blockPromise = axios
+        .get(`https://dr-backend-32ec.onrender.com/noticeBoard/getAllNotice/${blockname}`)
+        .then((res) => res.data)
+        .catch((err) => {
+          if (err.response && err.response.status === 404) return [];
+          throw err;
+        });
+
+      const globalPromise = axios
+        .get("https://dr-backend-32ec.onrender.com/globalNotice/getAll")
+        .then((res) => res.data)
+        .catch(() => []);
+
+      const [blockRes, globalRes] = await Promise.all([blockPromise, globalPromise]);
+
+      setBlockNotices(blockRes);
+      setGlobalNotices(globalRes);
+    } catch (err) {
+      console.error("Failed to fetch notices:", err);
+    } finally {
+      setLoadingNotices(false);
     }
-  }
-}, []);
-
-
-
-
-
-
-
-
-//Update the floorDetails in sessionStorage also....
-
-
-useEffect(() => {
-  if (!floorid) return;
-
-
-  const updated = { ...floorid, rooms: roomdata };
-  sessionStorage.setItem("selectedFloor", JSON.stringify(updated));
-}, [roomdata, floorid]);
-
-
-
-
-const fetchTimetables = async()=>{
-  try{
-    const {data} = await axios.get(`https://dr-backend-32ec.onrender.com/periods/blockTimetables/${blockname}`)
-    // console.log(data)
-    setTimetables(data)
-  }catch(err){
-    console.log(err.message)
-  }
-}
-
-
-
-
-  function handleFileUpload(e) {
-    const file = e.target.files[0];
-    setSelectedFile(file);
-
-
-    const reader = new FileReader();
-    reader.readAsBinaryString(file);
-    reader.onload = (e) => {
-      const binaryStr = e.target.result;
-      const workbook = XLSX.read(binaryStr, { type: "binary" });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const parsedData = XLSX.utils.sheet_to_json(sheet, { defval: "-" });
-      setPreviewData(parsedData);
-    };
-  }
-
-
-
-
-
-
-const getCurrentPeriod = (timetable, testHour = null, testMin = null) => {
-  try{
-    // setLoading(true);
-    if (!timetable || !Array.isArray(timetable)) {
-    return { status: "Invalid timetable" };
-  }
-  // console.log("thursday")
-  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const now = new Date();
-
-
-  if (testHour !== null && testMin !== null) {
-    now.setHours(testHour);
-    now.setMinutes(testMin);
-  }
-
-
-  // const today = "Tuesday";
-  const today = days[now.getDay()];
-  if (today === "Sunday") return { status: "Sunday is Holiday" };
-
-
-  const currentHour = now.getHours();
-  const currentMin = now.getMinutes();
-  const currentTime = currentHour * 60 + currentMin;
-
-
-  if (currentTime > (16 * 60 + 10) || currentTime < (9*60+15) ) return { status: "NoClass" };
-
-
-  const todayData = timetable.find(day => day.dayName === today);
-  if (!todayData || !todayData.periods?.length) return { status: "No Classes" };
-
-
-  const parseTime = (timeStr) => {
-  const [time, modifier] = timeStr.trim().split(" ");
-  let [hours, minutes] = time.split(":").map(Number);
-
-
-  if (modifier === "PM" && hours !== 12) hours += 12;
-  if (modifier === "AM" && hours === 12) hours = 0;
-
-
-  return hours * 60 + minutes;
-};
-
-
-  const currentPeriod = todayData.periods.find(period => {
-    const start = parseTime(period.startTime);
-    const end = parseTime(period.endTime);
-    return currentTime >= start && currentTime <= end;
-  });
-
-
-
-
-if (currentPeriod) {
-  return {
-    status: "Ongoing",
-    faculty:currentPeriod.faculty,
-    info: (
-      <div className="text-start text-dark px-3 py-2">
-        <div className="mb-2">
-          <strong>Period:</strong> <span className="text-muted">{currentPeriod.periodNumber}</span>
-        </div>
-        
-        <div className="mb-2">
-        <div className="mb-2">
-          <strong>Subject:</strong> <span className="text-muted">{currentPeriod.subject}</span>
-        </div>
-          <strong>Time:</strong>{" "}
-          <span className="text-muted">
-            {currentPeriod.startTime} - {currentPeriod.endTime}
-          </span>
-        </div>
-        <div className="mb-2">
-          <strong>Faculty:</strong> <span className="text-muted">{currentPeriod.faculty}</span>
-        </div>
-      </div>
-    )
   };
-}
 
+  fetchNotices();
+}, [blockname,notices]);
 
-
-
-  return { status: "Free Period" };
-
-
-  }catch(e){
-    console.error(e.message)
-  }finally{
-    // setLoading(false);
-  }
-};
-
-
-    const handleUpload = async (room) => {
-      
-        if (!selectedFile || !room) {
-          toast.warn("Please provide class name and upload a file.");
-          return;
-        }
-      
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        formData.append('className', room);
-        formData.append('blockName', blockname);
-
-
-        try {
-          setuploadLoading(true)
-          const res = await axios.post('https://dr-backend-32ec.onrender.com/periods/upload', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-          });
-
-
-          const data = await res.data;
-
-
-          fetchTimetables();//update the timetables after uploading new timetable...
-
-
-          alert(data.message);
-
-
-        } catch (err) {
-          setuploadLoading(false)
-          alert("Upload failed!");
-      }finally{
-        setuploadLoading(false)
-      }
-    };
- 
-
-
-  const deleteTimetableByClass = async (className) => {
-  const confirmed = window.confirm(`Are you sure you want to delete the timetable for ${className}?`);
-  if (!confirmed) return;
-
-
+const handleDeleteNotice = async (id) => {
   try {
-    await axios.patch(`https://dr-backend-32ec.onrender.com/periods/delete/${blockname}/${className}`);
-    alert("Timetable deleted successfully!");
-    fetchTimetables()
+    const confirmed = window.confirm(
+      `Are you sure you want to delete this Notice for ${blockname} Block?`
+    );
+    if (!confirmed) return;
+
+    await axios.patch(
+      `https://dr-backend-32ec.onrender.com/noticeBoard/deleteNotice/${blockname}/${id}`
+    );
+
+    toast.success("Notice deleted successfully");
+    setBlockNotices((prev) => prev.filter((notice) => notice._id !== id));
   } catch (err) {
-    console.error("Failed to delete timetable:", err);
-    alert("Error deleting timetable");
+    toast.error("Failed to delete notice");
+    console.error(err);
   }
 };
 
+  const handleAddNotice = async () => {
+    if (!newNotice.trim()) return toast.error("Notice cannot be empty");
 
+    try {
+      await axios.post(
+        `https://dr-backend-32ec.onrender.com/noticeBoard/createNotice/${blockname}`,
+        {
+          message: newNotice,
+          postedBy: access,
+        }
+      );
+      setNewNotice("");
+      toast.success("Notice added successfully");
 
+      const res = await axios.get(
+        `https://dr-backend-32ec.onrender.com/noticeBoard/getAllNotice/${blockname}`
+      );
+      setNotices(res.data);
+    } catch (err) {
+      toast.error("Failed to add notice");
+      console.error(err);
+    }
+  };
 
   const handleAddFloor = async (e) => {
     e.preventDefault();
@@ -450,396 +167,324 @@ if (currentPeriod) {
       return;
     }
     try {
-      await axios.post(`https://dr-backend-32ec.onrender.com/block/floor/${block?._id}`, { floor_name: floorName });
+      await axios.post(
+        `https://dr-backend-32ec.onrender.com/block/floor/${block?._id}`,
+        { floor_name: floorName }
+      );
       setFloorName("");
-      const response = await axios.get(`https://dr-backend-32ec.onrender.com/block/get-data/${block?._id}`);
+      const response = await axios.get(
+        `https://dr-backend-32ec.onrender.com/block/get-data/${block?._id}`
+      );
       setBlock(response.data);
     } catch (error) {
       alert("Failed to add floor");
     }
   };
 
-
-  const confirmDeleteFloor = () => {
-    setDialogType("floor");
-    sessionStorage.removeItem("selectedFloor")
-    setShowDialog(true);
-  };
-
-
-  const confirmDeleteRoom = (room) => {
-    setSelectedRoom(room);
-    setDialogType("room");
-    setShowDialog(true);
-  };
-
-
   const handleConfirmDelete = async () => {
     setShowDialog(false);
     try {
       if (!block || !floorid) return;
 
-
       if (dialogType === "floor") {
-        await axios.delete(`https://dr-backend-32ec.onrender.com/block/${block._id}/floor/${floorid._id}`);
+        await axios.delete(
+          `https://dr-backend-32ec.onrender.com/block/${block._id}/floor/${floorid._id}`
+        );
         setFloorid(null);
       } else if (dialogType === "room" && selectedRoom) {
-        await axios.delete(`https://dr-backend-32ec.onrender.com/block/${block._id}/floor/${floorid._id}/room/${selectedRoom._id}`);
+        await axios.delete(
+          `https://dr-backend-32ec.onrender.com/block/${block._id}/floor/${floorid._id}/room/${selectedRoom._id}`
+        );
       }
 
-
-      const updatedData = await axios.get(`https://dr-backend-32ec.onrender.com/block/get-data/${block._id}`);
+      const updatedData = await axios.get(
+        `https://dr-backend-32ec.onrender.com/block/get-data/${block._id}`
+      );
       localStorage.setItem("block", JSON.stringify(updatedData.data));
       setBlock(updatedData.data);
-      setRoomData(updatedData.data.floors.find((f) => f._id === floorid?._id)?.rooms || []);
+      setRoomData(
+        updatedData.data.floors.find((f) => f._id === floorid?._id)?.rooms || []
+      );
 
-
-      toast.success(dialogType === "floor" ? "Floor deleted" : `Room '${selectedRoom.room_name}' deleted`);
+      toast.success(
+        dialogType === "floor"
+          ? "Floor deleted"
+          : `Room '${selectedRoom.room_name}' deleted`
+      );
     } catch (error) {
       toast.error("Something went wrong");
       console.error(error);
     }
   };
 
-
-  const displayRoom = (floor) => {
-    sessionStorage.setItem("selectedFloor", JSON.stringify(floor));
-    setRoomData(floor.rooms);
-    setFloorid(floor);    
-  };
-
-
-  const backToFloors = () => {
-    sessionStorage.removeItem("selectedFloor");
-    setFloorid(null);
-    setRoomData([]);
-    setRoomSearch("");
-
-
-  };
-
-
-  const addRooms = () => {
-    if (block)
-      navigate(`/aitam/${block.block_name}/${floorid.floor_name}`, {
-        state: { floor: floorid, Block: block },
-      });
-  };
-
-
-  const modifyRoom = (room) => {
-    toast.info(`Redirecting to modify room: ${room.room_name}`);
-    navigate(`/aitam/${block.block_name}/${floorid.floor_name}/modify/${room.room_name}`, {
-      state: { Block: block, floor: floorid, Room: room },
-    });
-  };
-
-
   const backtohome = () => {
-    navigate(`/`)
-    sessionStorage.removeItem("selectedFloor")
+    navigate(`/`);
+    sessionStorage.removeItem("selectedFloor");
   };
 
+  const canEdit =
+    access === "super_admin" ||
+    (access !== "student" &&
+      dept.toLowerCase() === block?.block_name?.toLowerCase());
 
-  const handleCardClick = (index) => setExpandedRoom(index);
-  const closeModal = () => setExpandedRoom(null);
-
-
-  const canEdit = (access === "super_admin") || (access !== "student" && dept.toLowerCase() === block?.block_name?.toLowerCase());
-
+  const handleFloorClick = (floor) => {
+    navigate(`/aitam/${blockname}/${floor._id}/rooms`);
+  };
 
   return (
-    <Container fluid className="p-4 fs-6">
-      <ToastContainer />
-      <Modal show={showDialog} onHide={() => setShowDialog(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirm Delete</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to delete - {dialogType === "floor" ? `Floor: "${floorid?.floor_name || ''}"` : `Room: "${selectedRoom?.room_name || ''}"`}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDialog(false)}>Cancel</Button>
-          <Button variant="danger" onClick={handleConfirmDelete}>Delete</Button>
-        </Modal.Footer>
-      </Modal>
+  <Container fluid className="p-4 fs-6">
+    <ToastContainer />
 
-      
-        <>
-              {/* Fixed Top Navbar-like Header */}
-              <div
-                className="container-fluid px-0 position-fixed top-0 start-0 w-100 shadow-sm"
-                style={{
-                  zIndex: 1050,
-                  background: 'linear-gradient(90deg, #3767cfff 0%, #2575fc 100%)',
-                  borderBottom: '3px solid #0047ab',
-                  color: 'white',
-                }}
-              >
-                <div className="container px-3 py-3">
-                  <Row className="align-items-center justify-content-between">
-                    {/* Title */}
-                    <Col xs={12} md="auto" className="mb-2 mb-md-0 text-center text-md-start">
-                      <h5 className="m-0 fw-bold">
-                        Floor Page for Block: <span className="text-light">{block?.block_name}</span>
-                      </h5>
-                      {err && <p className="text-warning mt-2">{err}</p>}
-                    </Col>
+    {/* Delete Floor/Room Modal */}
+    <Modal show={showDialog} onHide={() => setShowDialog(false)}>
+      <Modal.Header closeButton>
+        <Modal.Title>Confirm Delete</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        Are you sure you want to delete -{" "}
+        {dialogType === "floor"
+          ? `Floor: "${floorid?.floor_name || ""}"`
+          : `Room: "${selectedRoom?.room_name || ""}"`}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => setShowDialog(false)}>
+          Cancel
+        </Button>
+        <Button variant="danger" onClick={handleConfirmDelete}>
+          Delete
+        </Button>
+      </Modal.Footer>
+    </Modal>
 
-                    {/* Buttons */}
-                    <Col xs={12} md="auto" className="text-center text-md-end">
-                      {(access!="student") &&
-                        <>
-                          <Button
-                            variant="light"
-                            className="me-2 fw-semibold"
-                            onClick={() => navigate(`/${blockname}/showtimetable`)}
-                          >
-                          Show Timetable
-                          </Button>
-                        </>
-                      }
-                      <Button variant="outline-light" className="fw-semibold" onClick={backtohome}>
-                        Back to Home
-                      </Button>
-                    </Col>
-                  </Row>
-                </div>
-              </div>
+    {/* Notices Modal */}
+    <Modal
+      show={showNoticeModal}
+      onHide={() => setShowNoticeModal(false)}
+      size="lg"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>📢 Notices for {blockname} Block</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {(access === "super_admin" ||
+          (access !== "student" &&
+            dept?.toLowerCase() === blockname?.toLowerCase())) && (
+          <div className="d-flex mb-3">
+            <Form.Control
+              type="text"
+              placeholder="Enter new notice"
+              value={newNotice}
+              onChange={(e) => setNewNotice(e.target.value)}
+              className="me-2"
+            />
+            <Button variant="success" onClick={handleAddNotice}>
+              Add Notice
+            </Button>
+          </div>
+        )}
 
-              {/* Content Section with top spacing */}
-              <div style={{ marginTop: '100px' }}>
-                {loading ? (
-                  <Loader /> // Show loader when loading is true
-                ) : (
-                  !floorid && (
-                    <>
-                      {canEdit && (
-                        <Row className="justify-content-center my-4">
-                          <Col xs="auto">
-                            <Form.Control
-                              type="text"
-                              placeholder="Enter floor name"
-                              value={floorName}
-                              onChange={(e) => setFloorName(e.target.value)}
-                            />
-                          </Col>
-                          <Col xs="auto">
-                            <Button variant="primary" onClick={handleAddFloor}>
-                              Add Floor
-                            </Button>
-                          </Col>
-                        </Row>
-                      )}
-
-                      <Row xs={1} sm={2} md={3} lg={4} className="g-4">
-                        {block?.floors?.map((floor, index) => (
-                          <Col key={index}>
-                            <Card
-                              className="text-center border-0 shadow rounded-4 bg-primary-subtle h-100"
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => displayRoom(floor)}
-                            >
-                              <Card.Body>
-                                <Card.Title className="fs-6 text-primary fw-bold">
-                                  {floor.floor_name}
-                                </Card.Title>
-                                <Card.Text className="text-muted">
-                                  {floor.rooms.length} Rooms
-                                </Card.Text>
-                              </Card.Body>
-                            </Card>
-                          </Col>
-                        ))}
-                      </Row>
-                    </>
-                  )
-                )}
-              </div>
-
-       </>
-
-
-      {floorid && (
-        <>
-          <Row className="justify-content-center mb-3">
-            <Col xs="auto">
-              <Form.Control
-                type="text"
-                placeholder="🔍 Search Room"
-                value={roomSearch}
-                onChange={(e) => setRoomSearch(e.target.value)}
-                size="lg"
-                className="rounded-pill shadow-sm px-4"
-                style={{ width: "300px" }}
-              />
-            </Col>
-          </Row>
-
-
-          <Row className="mb-3 align-items-center">
-            <Col>
-              <h5 className="fw-bold">🏢 Rooms in Floor: {floorid.floor_name}</h5>
-            </Col>
-            <Col xs="auto">
-              {canEdit && (
-                <>
-                  <Button className="me-2" size="lg" onClick={addRooms}>➕ Add Room</Button>
-                  <Button variant="danger" size="lg" onClick={confirmDeleteFloor}>🗑️ Delete Floor</Button>
-                </>
-              )}
-              <Button variant="outline-secondary" className="ms-2" size="lg" onClick={backToFloors}>
-                🔙 Back to Floors
-              </Button>
-            </Col>
-          </Row>
-
-
-          <Row className="mb-3">
-            <Col xs="auto">
-              <Form.Select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} size="lg" className="shadow-sm">
-                <option value="all">All</option>
-                <option value="occupied">Occupied</option>
-                <option value="empty">Empty</option>
-              </Form.Select>
-            </Col>
-          </Row>
-
-
-          {roomdata.length > 0 ? (
-            <Row xs={1} sm={2} md={3} lg={4} className="g-4">
-              {roomdata
-                .filter(room =>
-                  (filterStatus === "all" ||
-                    (filterStatus === "occupied" && room.occupied) ||
-                    (filterStatus === "empty" && !room.occupied)) &&
-                  (filterRoomType === "all" ||
-                    room.room_type.toLowerCase().replace(/\s+/g, '') ===
-                    filterRoomType.replace(/\s+/g, '')) &&
-                  room.room_name.toLowerCase().includes(roomSearch.toLowerCase())
-                )
-                .map((room, index) => {
-                  const timetable = timetableMap[room.room_name] ?? null;
-                  const now = new Date();
-                  const hour = now.getHours();
-                  const minute = now.getMinutes();
-                  const periodinfo = timetable ? getCurrentPeriod(timetable, hour, minute) : null;
-
-
-                  return (
-                    <Col key={index}>
-                      <Card
-                        className="shadow-sm h-100 border-0"
+        {loadingNotices ? (
+          <Loader text="Loading Notices..." />
+        ) : (
+          <>
+            {globalNotices.length > 0 && (
+              <>
+                <h6 className="text-primary">Global Notices</h6>
+                <ul className="list-group mb-3">
+                  {globalNotices.map((notice) => (
+                    <li
+                      key={notice._id}
+                      className="list-group-item d-flex justify-content-between align-items-start flex-wrap"
+                    >
+                      <div
                         style={{
-                          backgroundColor: room.occupied ? "#f8d7da" : "#d4edda",
-                          cursor: "pointer",
+                          flex: "1 1 auto",
+                          minWidth: 0,
+                          wordBreak: "break-word",
+                          whiteSpace: "pre-wrap",
+                          overflowWrap: "break-word",
                         }}
-                        onClick={() => handleCardClick(index)}
                       >
-                        <Card.Body className="d-flex flex-column justify-content-center text-center">
-                          <div>
-                            <div className="d-flex justify-content-center align-items-center mb-2">
-                              <i
-                                className={`bi ${room.occupied ? "bi-lock-fill" : "bi-unlock"}`}
-                                style={{
-                                  fontSize: "1.2rem",
-                                  color: room.occupied ? "red" : "green",
-                                  marginRight: "0.5rem",
-                                }}
-                              ></i>
-                              <strong className="text-truncate" style={{ maxWidth: "150px" }}>
-                                {room.room_name}
-                              </strong>
-                            </div>
-                            <small className="text-muted text-truncate">ID: {room.room_id}</small>
-                          </div>
-                        </Card.Body>
-                      </Card>
+                        <b>{notice.message}</b>
+                        <div className="text-muted" style={{ fontSize: "0.8rem" }}>
+                          {new Date(notice.createdAt).toLocaleString()}
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
 
+            {blockNotices.length > 0 && (
+              <>
+                <h6 className="text-success">Block Notices</h6>
+                <ul className="list-group">
+                  {blockNotices.map((notice) => (
+                    <li
+                      key={notice._id}
+                      className="list-group-item d-flex justify-content-between align-items-start flex-wrap"
+                    >
+                      <div
+                        style={{
+                          flex: "1 1 auto",
+                          minWidth: 0,
+                          wordBreak: "break-word",
+                          whiteSpace: "pre-wrap",
+                          overflowWrap: "break-word",
+                        }}
+                      >
+                        <b>{notice.message}</b>
+                        <div className="text-muted" style={{ fontSize: "0.8rem" }}>
+                          {new Date(notice.createdAt).toLocaleString()}
+                        </div>
+                      </div>
+                      {(access === "super_admin" ||
+                        (access !== "student" &&
+                          dept?.toLowerCase() === blockname?.toLowerCase())) && (
+                        <Button
+                          variant="outline-danger"
+                          size="sm"
+                          className="ms-2 mt-2 mt-md-0"
+                          onClick={() => handleDeleteNotice(notice._id)}
+                        >
+                          Delete
+                        </Button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
 
-                      {/* Modal for room details */}
-                      <Modal show={expandedRoom === index} onHide={closeModal} centered>
-                        <Modal.Header closeButton>
-                          <Modal.Title>{room.room_name}</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                          {timetable && periodinfo.status!="NoClass" ? (
-                            <p className="text-center">
-                              {periodinfo.status === "Ongoing" ? (
-                                <span className="text-success fw-bold">{periodinfo.info}</span>
-                              ) : (
-                                <span className="text-muted">{periodinfo.status}</span>
-                              )}
-                            </p>
-                          ) : (
-                            <>
-                              <p><strong>ID:</strong> {room.room_id}</p>
-                              <p><strong>Type:</strong> {room.room_type}</p>
-                              <p><strong>Capacity:</strong> {room.room_capacity}</p>
-                              <p><strong>Status:</strong> {room.occupied ? "Occupied" : "Empty"}</p>
-                              <p><strong>Last Modified:</strong> {formatDistanceToNow(new Date(room.lastModifiedDate), { addSuffix: true })}</p>
-                            </>
-                          )}
+            {globalNotices.length === 0 && blockNotices.length === 0 && (
+              <p className="text-muted">No notices available.</p>
+            )}
+          </>
+        )}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => setShowNoticeModal(false)}>
+          Close
+        </Button>
+      </Modal.Footer>
+    </Modal>
 
+    {/* Sticky Header */}
+    <div
+      className="container-fluid px-0 sticky-top shadow-sm"
+      style={{
+        zIndex: 1050,
+        background: "linear-gradient(90deg, #3767cfff 0%, #2575fc 100%)",
+        borderBottom: "3px solid #0047ab",
+        color: "white",
+      }}
+    >
+      <div className="container px-3 py-3">
+        <Row className="align-items-center justify-content-between">
+          <Col
+            xs={12}
+            md="auto"
+            className="mb-2 mb-md-0 text-center text-md-start"
+          >
+            <h5 className="m-0 fw-bold">
+              Floors in <span className="text-light">{block?.block_name} Block</span>
+            </h5>
+            {err && <p className="text-warning mt-2">{err}</p>}
+          </Col>
 
-                          {canEdit && (
-                            <div className="mt-3">
-                              {!timetable && (
-                                <>
-                                  <input type="file" onChange={handleFileUpload} className="form-control mb-2" />
-                                  <Button
-                                    size="sm"
-                                    variant="success"
-                                    onClick={() => handleUpload(room.room_name)}
-                                    className="mb-2 w-100"
-                                    disabled={uploadLoading}
-                                  >
-                                    {uploadLoading ? (
-                                      <>
-                                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                        &nbsp;Uploading in...
-                                      </>
-                                    ) : (
-                                      "Upload Timetable"
-                                    )}
-                                  </Button>
-                                </>
-                              )}
+          <Col xs={12} md="auto" className="text-center text-md-end">
+            {access !== "student" && (
+              <Button
+                variant="light"
+                className="me-2 fw-semibold"
+                onClick={() => navigate(`/${blockname}/showtimetable`)}
+              >
+                Show Timetable
+              </Button>
+            )}
+            <Button
+              variant="outline-light"
+              className="fw-semibold me-2"
+              onClick={() => setShowNoticeModal(true)}
+            >
+              Notices
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                className="bi bi-bell-fill ms-1"
+                viewBox="0 0 16 16"
+              >
+                <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
+              </svg>
+            </Button>
+            <Button
+              variant="outline-light"
+              className="fw-semibold"
+              onClick={backtohome}
+            >
+              Back to Home
+            </Button>
+          </Col>
+        </Row>
+      </div>
+    </div>
 
+    {/* Content Section (no hardcoded margin) */}
+    <div className="mt-4">
+      {loading ? (
+        <Loader />
+      ) : (
+        !floorid && (
+          <>
+            {canEdit && (
+              <Row className="justify-content-center my-4">
+                <Col xs="auto">
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter floor name"
+                    value={floorName}
+                    onChange={(e) => setFloorName(e.target.value)}
+                  />
+                </Col>
+                <Col xs="auto">
+                  <Button variant="primary" onClick={handleAddFloor}>
+                    Add Floor
+                  </Button>
+                </Col>
+              </Row>
+            )}
 
-                              {!timetable ? (
-                                <div className="d-flex justify-content-between">
-                                  <Button size="sm" variant="info" onClick={() => modifyRoom(room)}>Modify</Button>
-                                  <Button size="sm" variant="danger" onClick={() => confirmDeleteRoom(room)}>Delete</Button>
-                                </div>
-                              ) : (
-                                <div className="d-flex justify-content-between">
-                                  <Button size="sm" variant="danger" onClick={() => deleteTimetableByClass(room.room_name)}>Remove Timetable</Button>
-                                  <Button size="sm" variant="danger" onClick={() => confirmDeleteRoom(room)}>Delete Room</Button>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </Modal.Body>
-                      </Modal>
-                    </Col>
-                  );
-                })}
+            <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+              {block?.floors?.map((floor, index) => (
+                <Col key={index}>
+                  <Card
+                    className="text-center border-0 shadow rounded-4 bg-primary-subtle h-100"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleFloorClick(floor)}
+                  >
+                    <Card.Body>
+                      <Card.Title className="fs-6 text-primary fw-bold">
+                        {floor.floor_name}
+                      </Card.Title>
+                      <Card.Text className="text-muted">
+                        {floor.rooms.length} Rooms
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
             </Row>
-          ) : (
-            <p className="text-center mt-4">No rooms found.</p>
-          )}
-        </>
+          </>
+        )
       )}
+    </div>
+  </Container>
+);
 
-    </Container>
-  );
 };
 
-
 export default Floorpage;
-
-
-
-
-

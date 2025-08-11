@@ -1,4 +1,6 @@
 // App.js
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import React, { useEffect, useState, useRef } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Homepage from "./pages/Homepage";
@@ -17,6 +19,12 @@ import Footer from "./pages/dashboard/Footer.jsx";
 import Team from "./pages/dashboard/Team.jsx";
 import TimetableMonday from "./pages/FloorTimetableOverview.jsx";
 import FindFaculty from "./pages/FindFaculty.jsx";
+import Roomspage from "./pages/Roomspage.jsx";
+import AdminLogin from "./pages/AdminLogin.jsx";
+import SuperAdminNoticePage from "./pages/SuperAdminNoticePage.jsx";
+import ContactPage from "./pages/ContactPage.jsx";
+import AboutPage from "./pages/AboutPage";
+
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!sessionStorage.getItem("token"));
@@ -65,14 +73,17 @@ const App = () => {
       <div style={{ paddingBottom: `${footerHeight}px` }}>
         <Routes>
           <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/jamesBond" element={<AdminLogin setIsAuthenticated={setIsAuthenticated} />} />
           <Route path="/team" element={<Team />} />
 
           {isAuthenticated ? (
             <>
+            
               <Route path="/" element={<ProtectedRoute><Homepage footerHeight={footerHeight}/></ProtectedRoute>} />
               <Route path="/aitam" element={<ProtectedRoute><Blockform /></ProtectedRoute>} />
               <Route path="/aitam/:blockname" element={<ProtectedRoute><Floorpage /></ProtectedRoute>} />
               <Route path="/aitam/:blockId/:floorname" element={<ProtectedRoute><Roomform /></ProtectedRoute>} />
+              <Route path="/aitam/:blockname/:floorId/rooms" element={<ProtectedRoute><Roomspage /></ProtectedRoute>} />
               <Route path="/aitam/:blockid/:floorname/modify/:roomname" element={<ProtectedRoute><UpdateRoom /></ProtectedRoute>} />
               <Route path="/register" element={<RegisterProtect><Register /></RegisterProtect>} />
               <Route path="/dashboard" element={<ProtectedDash role="super_admin"><AdminDashboard /></ProtectedDash>} />
@@ -80,7 +91,10 @@ const App = () => {
               <Route path="/:blockname/showtimetable" element={<ProtectedRoute><TimetableMonday /></ProtectedRoute>} />
               
               <Route path="/findFaculty" element={<ProtectedRoute><FindFaculty /></ProtectedRoute>} />
-
+              <Route path="globalNotice" element={<ProtectedRoute><SuperAdminNoticePage /></ProtectedRoute>}/>
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/about" element={<AboutPage />} />
+    
             </>
           ) : (
             <Route path="*" element={<Navigate to="/login" />} />
