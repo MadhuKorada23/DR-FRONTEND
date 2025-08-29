@@ -66,12 +66,26 @@ const AdminLogin = ({ setIsAuthenticated }) => {
 
   return (
     <>
-      {/* Marquee Banner at Top */}
-      <div className="top-marquee text-white text-center py-2">
-        <marquee behavior="scroll" direction="left" scrollamount="6">
-          🚀 Welcome to AITAM Digital Room Management Portal — Smart, Fast, and Reliable!
-        </marquee>
-      </div>
+      <div className="top-marquee text-white py-3 fixed top-0 left-0 w-full z-50 bg-black">
+          <div className="flex flex-col items-center justify-center space-y-3 text-center">
+            
+            {/* Title */}
+            <span className="text-sm sm:text-base">
+              🚀 Welcome to AITAM Digital Room Management Portal — Smart, Fast, and Reliable!
+            </span>
+
+            {/* Buttons */}
+            <div className="flex space-x-4 justify-center">
+              <button className="px-4 py-2 rounded-md bg-white text-black text-xs sm:text-sm hover:bg-gray-200 transition" onClick={() => navigate('/About')}>
+                About
+              </button>
+              <button className="px-4 py-2 rounded-md bg-white text-black text-xs sm:text-sm hover:bg-gray-200 transition" onClick={() => navigate('/Contact')}>
+                Contact
+              </button>
+            </div>
+
+          </div>
+        </div>
 
       {/* Login Page Wrapper */}
       <div className="login-page-wrapper">

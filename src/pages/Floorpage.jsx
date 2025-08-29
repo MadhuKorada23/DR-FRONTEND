@@ -288,34 +288,47 @@ const handleDeleteNotice = async (id) => {
           <Loader text="Loading Notices..." />
         ) : (
           <>
-            {globalNotices.length > 0 && (
-              <>
-                <h6 className="text-primary">Global Notices</h6>
-                <ul className="list-group mb-3">
-                  {globalNotices.map((notice) => (
-                    <li
-                      key={notice._id}
-                      className="list-group-item d-flex justify-content-between align-items-start flex-wrap"
-                    >
-                      <div
-                        style={{
-                          flex: "1 1 auto",
-                          minWidth: 0,
-                          wordBreak: "break-word",
-                          whiteSpace: "pre-wrap",
-                          overflowWrap: "break-word",
-                        }}
+              {globalNotices.length > 0 && (
+                <>
+                  {/* Header */}
+                  <div
+                    className="text-center p-3 shadow-sm"
+                    style={{
+                      backgroundColor: "#0d6efd",
+                      color: "white",
+                      width: "100%",
+                    }}
+                  >
+                    <h5 className="mb-0">📢 Global Notices</h5>
+                  </div>
+
+                  {/* Notices list */}
+                  <ul className="list-group mb-3">
+                    {globalNotices.map((notice) => (
+                      <li
+                        key={notice._id}
+                        className="list-group-item d-flex justify-content-between align-items-start flex-wrap"
                       >
-                        <b>{notice.message}</b>
-                        <div className="text-muted" style={{ fontSize: "0.8rem" }}>
-                          {new Date(notice.createdAt).toLocaleString()}
+                        <div
+                          style={{
+                            flex: "1 1 auto",
+                            minWidth: 0,
+                            wordBreak: "break-word",
+                            whiteSpace: "pre-wrap",
+                            overflowWrap: "break-word",
+                          }}
+                        >
+                          <b>{notice.message}</b>
+                          <div className="text-muted" style={{ fontSize: "0.8rem" }}>
+                            {new Date(notice.createdAt).toLocaleString()}
+                          </div>
                         </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+
 
             {blockNotices.length > 0 && (
               <>

@@ -19,11 +19,12 @@ import Footer from "./pages/dashboard/Footer.jsx";
 import Team from "./pages/dashboard/Team.jsx";
 import TimetableMonday from "./pages/FloorTimetableOverview.jsx";
 import FindFaculty from "./pages/FindFaculty.jsx";
+import FreeFaculty from "./pages/FreeFaculty.jsx"
 import Roomspage from "./pages/Roomspage.jsx";
 import AdminLogin from "./pages/AdminLogin.jsx";
 import SuperAdminNoticePage from "./pages/SuperAdminNoticePage.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
-import AboutPage from "./pages/AboutPage";
+import AboutPage from "./pages/AboutPage.jsx";
 
 
 const App = () => {
@@ -73,8 +74,10 @@ const App = () => {
       <div style={{ paddingBottom: `${footerHeight}px` }}>
         <Routes>
           <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-          <Route path="/jamesBond" element={<AdminLogin setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/admin" element={<AdminLogin setIsAuthenticated={setIsAuthenticated} />} />
           <Route path="/team" element={<Team />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/about" element={<AboutPage />} />
 
           {isAuthenticated ? (
             <>
@@ -89,11 +92,10 @@ const App = () => {
               <Route path="/dashboard" element={<ProtectedDash role="super_admin"><AdminDashboard /></ProtectedDash>} />
               <Route path="/roomsOverview" element={<ProtectedRoute><RoomsOverview /></ProtectedRoute>} />
               <Route path="/:blockname/showtimetable" element={<ProtectedRoute><TimetableMonday /></ProtectedRoute>} />
-              
               <Route path="/findFaculty" element={<ProtectedRoute><FindFaculty /></ProtectedRoute>} />
+              <Route path="/freeFaculty" element={<ProtectedRoute><FreeFaculty /></ProtectedRoute>} />
               <Route path="globalNotice" element={<ProtectedRoute><SuperAdminNoticePage /></ProtectedRoute>}/>
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/about" element={<AboutPage />} />
+              
     
             </>
           ) : (

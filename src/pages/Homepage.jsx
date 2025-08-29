@@ -1,5 +1,4 @@
 
-
 import React, { useEffect, useState, useRef } from 'react';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -330,6 +329,11 @@ const Homepage = ({ footerHeight }) => {
                         Find Faculty
                       </button>
                     </li>
+                    <li>
+                      <button className="dropdown-item text-success" onClick={() => navigate('/freeFaculty')}>
+                        FreeFaculty
+                      </button>
+                    </li>
                     {access !== 'student' && (
                       <li>
                         <a className="dropdown-item text-info" href="/sample-timetable.xlsx" download>
@@ -337,7 +341,7 @@ const Homepage = ({ footerHeight }) => {
                         </a>
                       </li>
                     )}
-                    <li>
+                    {/* <li>
                       <button className="dropdown-item text-primary" onClick={() => navigate('/contact')}>
                         Contact Us
                       </button>
@@ -346,7 +350,7 @@ const Homepage = ({ footerHeight }) => {
                       <button className="dropdown-item text-primary" onClick={() => navigate('/about')}>
                         About Us
                       </button>
-                    </li>
+                    </li> */}
                     <li>
                       <button className="dropdown-item text-danger" onClick={handleSignOut}>
                         Sign Out

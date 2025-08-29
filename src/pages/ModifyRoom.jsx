@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import './ModifyRoom.css';
-
-
 import { useNavigate, useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,7 +13,7 @@ const ModifyRoom = () => {
   const [isOccupied, setIsOccupied] = useState(false);
   const [err, setErr] = useState("");
 
-     const navigate = useNavigate();
+  const navigate = useNavigate();
   const { state } = useLocation();
 
   const blockName = state.Block;
@@ -71,6 +69,7 @@ const ModifyRoom = () => {
       replace: true,
     });
   };
+  
 
   return (
     <div className="add-room-wrapper">
