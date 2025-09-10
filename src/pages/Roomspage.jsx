@@ -1000,7 +1000,7 @@ return (
   //                               {pauseLoading ? (
   //                                 <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
   //                               ) : (
-  //                                 pausingData[room.room_name] ? "Resume" : "Pause"
+  //                                                 pausingData[room.room_name] ? "Resume" : "Pause"
   //                               )}
   //                             </Button>
   //                           </div>
