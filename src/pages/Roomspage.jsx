@@ -667,7 +667,7 @@ return (
                               <Modal.Title>{room.room_name}</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                              {timetable && typeof pausingData[room.room_name] === "boolean" && (
+                              {canEdit && timetable && typeof pausingData[room.room_name] === "boolean" && (
                                 <div className="text-center mb-3">
                                   <Button
                                     size="sm"

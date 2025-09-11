@@ -66,7 +66,7 @@ const AdminLogin = ({ setIsAuthenticated }) => {
 
   return (
     <>
-      {/* <div className="top-marquee text-white py-3 fixed top-0 left-0 w-full z-50 bg-black">
+      <div className="top-marquee text-white py-3 fixed top-0 left-0 w-full z-50 bg-black">
           <div className="flex flex-col items-center justify-center space-y-3 text-center">
             
             
@@ -75,17 +75,24 @@ const AdminLogin = ({ setIsAuthenticated }) => {
             </span>
 
        
-            <div className="flex space-x-4 justify-center">
-              <button className="px-4 py-2 rounded-md bg-white text-black text-xs sm:text-sm hover:bg-gray-200 transition" onClick={() => navigate('/About')}>
-                About
-              </button>
-              <button className="px-4 py-2 rounded-md bg-white text-black text-xs sm:text-sm hover:bg-gray-200 transition" onClick={() => navigate('/Contact')}>
-                Contact
-              </button>
-            </div>
+          <div className="flex space-x-4 justify-center">
+          <button
+            className="px-4 py-2 rounded-md border border-white text-white text-xs sm:text-sm bg-transparent hover:bg-white/10 hover:shadow-md hover:scale-105 transition-all duration-300"
+            onClick={() => navigate('/About')}
+          >
+            About
+          </button>
+          <button
+            className="px-4 py-2 rounded-md border border-white text-white text-xs sm:text-sm bg-transparent hover:bg-white/10 hover:shadow-md hover:scale-105 transition-all duration-300"
+            onClick={() => navigate('/Contact')}
+          >
+            Contact
+          </button>
+        </div>
+
 
           </div>
-        </div> */}
+        </div>
 
       {/* Login Page Wrapper */}
       <div className="login-page-wrapper">

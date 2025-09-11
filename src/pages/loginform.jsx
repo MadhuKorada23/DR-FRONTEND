@@ -75,16 +75,24 @@ const Login = ({ setIsAuthenticated }) => {
             <span className="text-sm sm:text-base">
               🚀 Welcome to AITAM Digital Room Management Portal — Smart, Fast, and Reliable!
             </span>
+            {/*Navigation Buttons */}
+            <div className="flex space-x-6 justify-center">
+            <button
+              className="relative px-2 py-1 text-white text-sm sm:text-base bg-transparent group"
+              onClick={() => navigate('/About')}
+            >
+              About
+              <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full"></span>
+            </button>
+            <button
+              className="relative px-2 py-1 text-white text-sm sm:text-base bg-transparent group"
+              onClick={() => navigate('/Contact')}
+            >
+              Contact
+              <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full"></span>
+            </button>
+          </div>
 
-            {/* Buttons */}
-            <div className="flex space-x-4 justify-center">
-              <button className="px-4 py-2 rounded-md bg-white text-black text-xs sm:text-sm hover:bg-gray-200 transition" onClick={() => navigate('/About')}>
-                About
-              </button>
-              <button className="px-4 py-2 rounded-md bg-white text-black text-xs sm:text-sm hover:bg-gray-200 transition" onClick={() => navigate('/Contact')}>
-                Contact
-              </button>
-            </div>
 
           </div>
         </div>
