@@ -23,8 +23,8 @@ const Footer = forwardRef((props, ref) => {  // Correct: (props, ref)
             }}
           >
             <p className="mb-1">
-              Developed by{' '}
-              <span
+              Developed by Department of Computer Science and Engineering, AITAM{' '}
+              {/* <span
                 onClick={() => window.open('/team', '_blank')}
                 style={{
                   cursor: 'pointer',
@@ -37,7 +37,7 @@ const Footer = forwardRef((props, ref) => {  // Correct: (props, ref)
                 onMouseOut={(e) => (e.target.style.color = '#90caf9')}
               >
                 Department of Computer Science and Engineering, AITAM
-              </span>
+              </span> */}
             </p>
             <p className="mb-0">
               &copy; {currentYear} All rights reserved.

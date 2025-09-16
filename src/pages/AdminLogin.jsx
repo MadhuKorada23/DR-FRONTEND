@@ -66,33 +66,19 @@ const AdminLogin = ({ setIsAuthenticated }) => {
 
   return (
     <>
-      <div className="top-marquee text-white py-3 fixed top-0 left-0 w-full z-50 bg-black">
-          <div className="flex flex-col items-center justify-center space-y-3 text-center">
+      <div className="top-marquee text-white text-center py-2">
+        <marquee behavior="scroll" direction="left" scrollamount="8">
+           ⭐Welcome to Aditya Instute of Technology and Management, Digital Room Management Portal — Smart, Fast, and Reliable!⭐
             
-            
-            <span className="text-sm sm:text-base">
-              🚀 Welcome to AITAM Digital Room Management Portal — Smart, Fast, and Reliable!
-            </span>
+        </marquee>
+       <div className="mt-3">
+        <a href="/about" className="text-white small me-3 text-decoration-underline">About</a>
+        <a href="/contact" className="text-white small text-decoration-underline">Contact</a>
+      </div>
+
 
        
-          <div className="flex space-x-4 justify-center">
-          <button
-            className="px-4 py-2 rounded-md border border-white text-white text-xs sm:text-sm bg-transparent hover:bg-white/10 hover:shadow-md hover:scale-105 transition-all duration-300"
-            onClick={() => navigate('/About')}
-          >
-            About
-          </button>
-          <button
-            className="px-4 py-2 rounded-md border border-white text-white text-xs sm:text-sm bg-transparent hover:bg-white/10 hover:shadow-md hover:scale-105 transition-all duration-300"
-            onClick={() => navigate('/Contact')}
-          >
-            Contact
-          </button>
-        </div>
-
-
-          </div>
-        </div>
+      </div>
 
       {/* Login Page Wrapper */}
       <div className="login-page-wrapper">
@@ -105,11 +91,13 @@ const AdminLogin = ({ setIsAuthenticated }) => {
         >
           {/* Logo */}
           <div className="mb-3">
-            <img
-              src="/logo2.webp"
-              alt="AITAM Logo"
-              className="img-fluid"
-            />
+            <a href="https://www.adityatekkali.edu.in/" target="_blank" rel="noopener noreferrer">
+              <img
+                src="/logo2.webp"
+                alt="AITAM Logo"
+                className="img-fluid"
+              />
+            </a>
           </div>
 
           {/* <h2 className="mb-3 text-dark">{isAdmin ? "Admin Login" : "Student Login"}</h2> */}

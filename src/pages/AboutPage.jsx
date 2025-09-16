@@ -5,16 +5,26 @@ const AboutPage = () => {
   return (
     <>
       {/* Navbar */}
-     <nav className="navbar navbar-dark bg-dark">
+     <nav 
+  className="navbar navbar-light" 
+  style={{ backgroundColor: "#1c92f3ff" }}
+>
   <div className="container d-flex justify-content-between align-items-center">
-    <Link className="navbar-brand" to="/">AITAM Digital Rooms</Link>
+    <Link className="nav-link text-white fw-semibold" to="/">AITAM Digital Rooms</Link>
     <ul className="navbar-nav flex-row">
       <li className="nav-item mx-2">
-        <Link className="nav-link" to="/">Home</Link>
+        <Link className="nav-link text-white fw-semibold" to="/">Home</Link>
+      </li>
+      <li className="nav-item mx-2">
+        <Link className="nav-link text-white fw-semibold" to="/Contact">Contact</Link>
+      </li>
+      <li className="nav-item mx-2">
+              <Link className="nav-link text-white fw-semibold" to="/Team">Team</Link>
       </li>
     </ul>
   </div>
 </nav>
+
 
 
       {/* Hero Section */}
@@ -24,7 +34,7 @@ const AboutPage = () => {
             About Our Digital Room Management Portal
           </h1>
           <p className="lead mt-3">
-            🚀 AITAM’s Digital Room Management Portal is a smart, fast, and
+            AITAM’s Digital Room Management Portal is a smart, fast, and
             reliable solution for managing classrooms, labs, and faculty rooms
             efficiently.
           </p>
@@ -123,6 +133,93 @@ const AboutPage = () => {
           </ul>
         </div>
       </section>
+           
+           
+            {/* Faculty Guidance Section */}
+            {/* Faculty Guidance Section */}
+      <section className="py-5">
+        <div className="container">
+          <h2 className="text-center mb-5">Under the Guidance of</h2>
+          <div className="row justify-content-center align-items-center">
+            
+            {/* Faculty Image */}
+            <div className="col-md-6 d-flex justify-content-center mb-4 mb-md-0">
+              <img
+                src="/HODSIR.webp" // <-- replace with your image (e.g. bharath.webp)
+                alt="Faculty"
+                className="img-fluid rounded shadow-lg"
+                style={{
+                  width: "100%",
+                  maxWidth: "250px", // keeps it large but not oversized
+                  objectFit: "cover",
+                }}
+              />
+            </div>
+
+            {/* Faculty Info */}
+            <div className="col-md-6">
+              <h4 className="fw-bold">Dr. Y. Ramesh</h4>
+              <p className="text-muted mb-1">
+                Professor & Head of Department, CSE
+              </p>
+              <p className="mb-3">
+                Aditya Institute of Technology and Management, Tekkali
+              </p>
+              <p className="lead">
+                We sincerely express our gratitude to our faculty mentor for
+                their constant <b>Guidance, Support, and Encouragement</b>{" "}
+                throughout the development of this project. Their insights and
+                expertise have been invaluable in shaping this work and ensuring
+                its success.
+              </p>
+            </div>
+          </div>
+           {/* Additional Faculty Section */}
+          <div className="row mt-5 text-center">
+        <div className="col-md-6 mb-4">
+          <img
+            src="/chandusir.webp"
+            alt="Sri. K.V. Chandra Sekhar"
+            className="img-fluid shadow-sm mb-3"
+            style={{ 
+              width: "180px", 
+              height: "200px", 
+              objectFit: "cover", 
+              borderRadius: "12px"  // 🔹 Rounded box effect
+            }}
+          />
+          <h5 className="fw-bold">Sri. K.V. Chandra Sekhar</h5>
+          <p className="text-muted mb-1">Assistant Professor, CSE</p>
+          <p className="small text-muted">
+            For his valuable guidance, support, and encouragement throughout the project.
+          </p>
+        </div>
+
+        <div className="col-md-6 mb-4">
+          <img
+            src="/challusir.webp"
+            alt="Sri. T. Chalapathi Rao"
+            className="img-fluid shadow-sm mb-3"
+            style={{ 
+              width: "180px", 
+              height: "200px", 
+              objectFit: "cover", 
+              borderRadius: "12px"  // 🔹 Rounded box effect
+            }}
+          />
+          <h5 className="fw-bold">Sri. T. Chalapathi Rao</h5>
+          <p className="text-muted mb-1">Assistant Professor, CSE</p>
+          <p className="small text-muted">
+            For his valuable guidance, timely suggestions, and technical assistance.
+          </p>
+        </div>
+          </div>
+
+
+        </div>
+      </section>
+
+
 
       {/* Footer */}
       {/* <footer className="bg-dark text-white text-center py-3">

@@ -53,6 +53,7 @@
   align-items: center;
   padding: 5rem 1rem 1rem; /* Added top padding for marquee space */
   overflow: hidden;
+  padding-bottom: 60px;
 }
 
 .login-page-wrapper::before {

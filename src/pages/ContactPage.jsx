@@ -31,16 +31,26 @@ const Contact = () => {
       </style>
 
       {/* Navbar */}
-      <nav className="navbar navbar-dark bg-dark">
+      <nav 
+        className="navbar navbar-light" 
+        style={{ backgroundColor: "#1c92f3ff" }}
+      >
         <div className="container d-flex justify-content-between align-items-center">
-          <Link className="navbar-brand" to="/">AITAM Digital Rooms</Link>
+          <Link className="nav-link text-white fw-semibold" to="/">AITAM Digital Rooms</Link>
           <ul className="navbar-nav flex-row">
             <li className="nav-item mx-2">
-              <Link className="nav-link" to="/">Home</Link>
+              <Link className="nav-link text-white fw-semibold" to="/">Home</Link>
+            </li>
+            <li className="nav-item mx-2">
+              <Link className="nav-link text-white fw-semibold" to="/About">About</Link>
+            </li>
+            <li className="nav-item mx-2">
+              <Link className="nav-link text-white fw-semibold" to="/Team">Team</Link>
             </li>
           </ul>
         </div>
       </nav>
+
 
       {/* Hero Section */}
       <section className="py-5 text-center bg-light">
@@ -62,35 +72,40 @@ const Contact = () => {
             {/* Member 1 */}
             <div className="col-md-4 d-flex justify-content-center">
               <div className="card shadow-sm p-3 team-card">
-                <img src="images/madhu.jpg" alt="Sri.K.V.ChandraSekhar" className="team-img" />
+                <img src="chandusir.webp" alt="Sri.K.V.ChandraSekhar" className="team-img" />
                 <h5 className="fw-bold">Sri.K.V.ChandraSekhar,Asst.Prof</h5>
                 <p className="text-muted">Web-Administration</p>
-                <a href="mailto:madhu@example.com" className="btn btn-outline-dark btn-sm mt-auto">
-                  Email
+                <a href="mailto:kvcs@adityatekkali.edu.in" className="btn btn-outline-dark btn-sm mt-auto">
+                  kvcs@adityatekkali.edu.in
                 </a>
               </div>
             </div>
 
             {/* Member 2 */}
-            <div className="col-md-4 d-flex justify-content-center">
+          <div className="col-md-4 d-flex justify-content-center">
               <div className="card shadow-sm p-3 team-card">
                 <img src="/bharath.webp" alt="Kurasa.Bharath" className="team-img" />
-                <h5 className="fw-bold">Member 2</h5>
+                <h5 className="fw-bold">Bharath Kurasa</h5>
                 <p className="text-muted">FullStack Developer</p>
-                <a href="mailto:member2@example.com" className="btn btn-outline-dark btn-sm mt-auto">
-                  Email
+                <a 
+                  href="mailto:22a51a05f7@adityatekkali.edu.in" 
+                  className="btn btn-outline-dark btn-sm mt-auto"
+                >
+                  22a51a05f7@adityatekkali.edu.in
                 </a>
               </div>
             </div>
+
+
 
             {/* Member 3 */}
             <div className="col-md-4 d-flex justify-content-center">
               <div className="card shadow-sm p-3 team-card">
                 <img src="/jagga.webp" alt="Dasari.Jagadeesh" className="team-img" />
-                <h5 className="fw-bold">Member 3</h5>
+                <h5 className="fw-bold">Jagadeesh Dasari</h5>
                 <p className="text-muted">FullStack Developer</p>
-                <a href="mailto:member3@example.com" className="btn btn-outline-dark btn-sm mt-auto">
-                  Email
+                <a href="mailto:22a51a05d9@adityatekkali.edu.in" className="btn btn-outline-dark btn-sm mt-auto">
+                  22a51a05d9@adityatekkali.edu.in
                 </a>
               </div>
             </div>
@@ -99,9 +114,9 @@ const Contact = () => {
             <div className="col-md-4 d-flex justify-content-center">
               <div className="card shadow-sm p-3 team-card">
                 <img src="/blazzerpic1.webp" alt="Mahesh Babu" className="team-img" />
-                <h5 className="fw-bold">FullStack Developer</h5>
-                <p className="text-muted">UI/UX Designer</p>
-                <a href="mailto:member4@example.com" className="btn btn-outline-dark btn-sm mt-auto">
+                <h5 className="fw-bold">Mahesh Kondempudi</h5>
+                <p className="text-muted">FullStack Developer</p>
+                <a href="mailto:22a51a05f4@adityatekkali.edu.in" className="btn btn-outline-dark btn-sm mt-auto">
                   Email
                 </a>
               </div>
@@ -111,10 +126,10 @@ const Contact = () => {
             <div className="col-md-4 d-flex justify-content-center">
               <div className="card shadow-sm p-3 team-card">
                 <img src="/madhu.webp" alt="Madhu Korada" className="team-img" />
-                <h5 className="fw-bold">Member 5</h5>
+                <h5 className="fw-bold">Madhu Korada</h5>
                 <p className="text-muted">FullStack Developer</p>
-                <a href="mailto:member5@example.com" className="btn btn-outline-dark btn-sm mt-auto">
-                  Email
+                <a href="mailto:22a51a05f5@adityatekkali.edu.in" className="btn btn-outline-dark btn-sm mt-auto">
+                  22a51a05f5@adityatekkali.edu.in
                 </a>
               </div>
             </div>
@@ -127,7 +142,7 @@ const Contact = () => {
           <div className="container">
             <h2 className="text-center mb-4">Send Us Your Feedback</h2>
             <form
-              action="https://formspree.io/f/xrbbnlgw"
+              action="https://formspree.io/f/xblkzjgl"
               method="POST"
               className="w-75 mx-auto"
               onSubmit={(e) => {
